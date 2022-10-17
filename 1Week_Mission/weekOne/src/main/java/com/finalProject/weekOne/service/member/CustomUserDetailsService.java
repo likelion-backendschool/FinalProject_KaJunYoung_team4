@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.domain.service.member;
+package com.finalProject.weekOne.service.member;
 
 import com.finalProject.weekOne.domain.member.AuthMember;
 import com.finalProject.weekOne.domain.member.Member;
