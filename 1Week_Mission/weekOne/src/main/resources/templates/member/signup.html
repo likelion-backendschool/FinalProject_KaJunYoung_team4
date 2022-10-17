@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout/layout.html}">
+<html  class="no-js"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+       layout:decorate="~{layout/layout.html}">
 
 <head>
     <title>회원가입</title>
@@ -12,12 +15,21 @@
         <div class="max-w-md w-full px-2 pt-4">
             <h1 class="font-bold text-lg">회원가입</h1>
 
-            <form th:action method="POST" class="flex flex-col gap-3" onsubmit="return false;">
+            <form th:action method="POST" class="flex flex-col gap-3" th:object="${signUpDto}">
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">아이디</span>
                     </label>
-                    <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
+                    <input autofocus type="text" th:field="*{username}" placeholder="아이디" class="input input-bordered"
+                           maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</small>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">필명</span>
+                    </label>
+                    <input autofocus type="text" th:field="*{nickname}" placeholder="필명" class="input input-bordered"
                            maxlength="50">
                 </div>
 
@@ -25,8 +37,9 @@
                     <label class="label">
                         <span class="label-text">비밀번호</span>
                     </label>
-                    <input type="password" name="password"
+                    <input type="password" th:field="*{password}"
                            placeholder="비밀번호" class="input input-bordered" maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</small>
                 </div>
 
                 <div class="form-control">
@@ -42,7 +55,8 @@
                     <label class="label">
                         <span class="label-text">이메일</span>
                     </label>
-                    <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50">
+                    <input type="email" th:field="*{email}" placeholder="이메일" class="input input-bordered" maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</small>
                 </div>
 
                 <div class="grid grid-cols-2 mt-2 gap-2">
