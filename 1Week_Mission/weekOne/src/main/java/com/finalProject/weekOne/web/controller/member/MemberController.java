@@ -1,10 +1,14 @@
 package com.finalProject.weekOne.web.controller.member;
 
+import com.finalProject.weekOne.domain.member.AuthMember;
+import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.service.member.MemberService;
+import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,21 +26,21 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
+    @PreAuthorize("isAnonymous()")
     public String showLoginPage() {
         return "member/login";
     }
 
-    @PreAuthorize("isAnonymous()")
     @GetMapping("/signUp")
+    @PreAuthorize("isAnonymous()")
     public String showSignUpPage(Model model) {
         model.addAttribute("signUpDto", new SignUpDto());
         return "member/signup";
     }
 
-    @PreAuthorize("isAnonymous()")
     @PostMapping("/signUp")
+    @PreAuthorize("isAnonymous()")
     public String doSignup(@Valid SignUpDto signUpDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("signUpDto", signUpDto);
@@ -44,5 +48,24 @@ public class MemberController {
         }
         memberService.join(signUpDto);
         return "redirect:/member/login";
+    }
+
+    @GetMapping("/modify")
+    @PreAuthorize("isAuthenticated()")
+    public String showModifyPage(Model model, @AuthenticationPrincipal AuthMember authMember) {
+        Member currentMember = authMember.getMember();
+
+        model.addAttribute("member", currentMember);
+
+        return "member/modify";
+    }
+
+    @PostMapping("/modify")
+    @PreAuthorize("isAuthenticated()")
+    public String doModifyBasicInfo(ModifyDto modifyDto, Model model, @AuthenticationPrincipal AuthMember authMember) {
+
+        memberService.changeBasicInfo(authMember.getUsername(), modifyDto);
+
+        return "redirect:/member/modify";
     }
 }

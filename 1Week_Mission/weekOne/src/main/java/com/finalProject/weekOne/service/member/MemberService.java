@@ -5,6 +5,7 @@ import com.finalProject.weekOne.domain.member.MemberRepository;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -41,11 +43,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeBasicInfo(Member currentMember, ModifyDto modifyDto) {
+    public void changeBasicInfo(String username, ModifyDto modifyDto) {
+        Member currentMember = findByUsername(username);
         currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
     }
 
-    @Transactional
     public void changePassword(Member currentMember, String password) {
         currentMember.changePassword(passwordEncoder.encode(password));
     }
