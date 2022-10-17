@@ -51,4 +51,8 @@ public class MemberService {
     public void changePassword(Member currentMember, String password) {
         currentMember.changePassword(passwordEncoder.encode(password));
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
+    }
 }

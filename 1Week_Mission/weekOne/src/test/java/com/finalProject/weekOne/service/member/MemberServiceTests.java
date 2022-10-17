@@ -53,7 +53,7 @@ class MemberServiceTests {
         dto.setNickname(nickname);
 
         // when
-        memberService.changeBasicInfo(foundMember, dto);
+        memberService.changeBasicInfo(foundMember.getUsername(), dto);
 
         // then
         assertThat(foundMember.getEmail()).isEqualTo(email);
@@ -76,6 +76,20 @@ class MemberServiceTests {
 
         // then
         assertThat(passwordEncoder.matches(changePassword, foundMember.getPassword())).isTrue();
+    }
+
+    @Test
+    @DisplayName("아이디찾기")
+    void findUsernameByEmail() {
+        // given
+        Member foundMember = memberService.findByUsername("testUser");
+        String email = foundMember.getEmail();
+
+        // when
+        Member currentMember = memberService.findByEmail(email);
+
+        // then
+        assertThat(foundMember.getUsername()).isEqualTo(currentMember.getUsername());
     }
 
 }
