@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.web.member;
+package com.finalProject.weekOne.web.controller.member;
 
 import com.finalProject.weekOne.service.member.MemberService;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
