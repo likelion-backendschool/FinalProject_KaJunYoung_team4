@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.config.security;
+package com.finalProject.weekOne.app.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

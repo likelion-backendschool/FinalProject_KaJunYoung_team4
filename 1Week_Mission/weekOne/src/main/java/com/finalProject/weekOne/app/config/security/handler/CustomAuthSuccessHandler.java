@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.config.security.handler;
+package com.finalProject.weekOne.app.config.security.handler;
 
 import com.finalProject.weekOne.app.util.Ut;
 import com.finalProject.weekOne.domain.member.AuthMember;
