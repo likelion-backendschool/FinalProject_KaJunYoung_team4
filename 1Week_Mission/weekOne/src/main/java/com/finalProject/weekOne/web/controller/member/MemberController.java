@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -67,5 +68,20 @@ public class MemberController {
         memberService.changeBasicInfo(authMember.getUsername(), modifyDto);
 
         return "redirect:/member/modify";
+    }
+
+    @GetMapping("/findUsername")
+    @PreAuthorize("isAnonymous()")
+    public String showFindUsernamePage() {
+
+        return "member/findUsername";
+    }
+
+    @PostMapping("/findUsername")
+    @PreAuthorize("isAnonymous()")
+    public String doFindMemberByEmail(String email, RedirectAttributes redirectAttributes) {
+        Member currentMember = memberService.findByEmail(email);
+        redirectAttributes.addFlashAttribute("result", currentMember.getUsername());
+        return "redirect:/member/findUsername";
     }
 }

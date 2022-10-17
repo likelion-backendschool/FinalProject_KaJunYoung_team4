@@ -8,7 +8,7 @@
       layout:decorate="~{layout/layout.html}">
 
 <head>
-  <title>로그인</title>
+  <title>아이디 찾기</title>
 </head>
 
 <body>
@@ -16,32 +16,23 @@
   <section class="section section-login flex-grow flex flex-col items-center justify-center">
 
     <div class="max-w-md w-full px-2 pt-4">
-      <h1 class="font-bold text-lg">로그인</h1>
-
+      <h1 class="font-bold text-lg">아이디 찾기</h1>
       <form th:action method="POST" class="flex flex-col gap-3">
         <div class="form-control">
           <label class="label">
-            <span class="label-text">아이디</span>
+            <span class="label-text">이메일</span>
           </label>
-          <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered" maxlength="50">
+          <input th:if="${result}" type="text" autofocus th:value="${result}" class="input input-bordered" maxlength="50" readonly>
+          <input th:unless="${result}"type="email" autofocus name="email" placeholder="이메일을 입력해주세요." class="input input-bordered" maxlength="50">
         </div>
 
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">비밀번호</span>
-          </label>
-          <input type="password" name="password"
-                 placeholder="비밀번호" class="input input-bordered" maxlength="50">
-        </div>
-
-        <div class="grid grid-cols-2 mt-2 gap-2">
-          <input class="btn btn-primary" type="submit" value="로그인">
-          <a href="/member/signUp" class="btn btn-secondary btn-outline">가입하기</a>
+        <div class="grid grid-cols-1 mt-2">
+          <input class="btn btn-primary" type="submit" value="아이디 찾기">
         </div>
       </form>
     </div>
     <div class="text-center mt-3">
-      <a href="/member/findUsername">아이디 찾기</a>
+      <a href="/member/login">로그인</a>
       <span class="mx-2">|</span>
       <a href="/member/findPassword">비밀번호 찾기</a>
     </div>
