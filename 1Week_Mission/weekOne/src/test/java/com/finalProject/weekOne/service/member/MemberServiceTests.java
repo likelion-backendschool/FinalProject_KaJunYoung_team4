@@ -33,15 +33,15 @@ class MemberServiceTests {
 
         SignUpDto dto = new SignUpDto();
         dto.setUsername(username);
-        dto.setPassword(passwordEncoder.encode(password));
+        dto.setPassword(password);
         dto.setEmail(email);
 
         memberService.join(dto);
     }
 
     @Test
-    @DisplayName("회원 정보 수정")
-    void updateInfo() {
+    @DisplayName("회원 정보 수정 (nickname, email)")
+    void modifyBasicInfo() {
         // given
         Member foundMember = memberService.findByUsername("testUser");
 
@@ -58,6 +58,24 @@ class MemberServiceTests {
         // then
         assertThat(foundMember.getEmail()).isEqualTo(email);
         assertThat(foundMember.getNickname()).isEqualTo(nickname);
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 (password)")
+    void modifyPassword() {
+        // given
+        Member foundMember = memberService.findByUsername("testUser");
+        String rawPassword = "testUser1234!";
+        String changePassword = "abcdefu1234!";
+
+        // (given check)
+        assertThat(passwordEncoder.matches(rawPassword, foundMember.getPassword())).isTrue();
+
+        // when
+        memberService.changePassword(foundMember, changePassword);
+
+        // then
+        assertThat(passwordEncoder.matches(changePassword, foundMember.getPassword())).isTrue();
     }
 
 }

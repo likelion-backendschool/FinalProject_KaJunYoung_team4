@@ -44,4 +44,9 @@ public class MemberService {
     public void changeBasicInfo(Member currentMember, ModifyDto modifyDto) {
         currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
     }
+
+    @Transactional
+    public void changePassword(Member currentMember, String password) {
+        currentMember.changePassword(passwordEncoder.encode(password));
+    }
 }
