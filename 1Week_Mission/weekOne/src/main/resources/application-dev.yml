@@ -1,4 +1,9 @@
+server:
+  port: 8080
 spring:
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
   devtools:
     livereload:
       enabled: true
@@ -8,3 +13,6 @@ spring:
     url: jdbc:mysql://localhost:3306/finalproject_dev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password:
+  jpa:
+    hibernate:
+      ddl-auto: create
