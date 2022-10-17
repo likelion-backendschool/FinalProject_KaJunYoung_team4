@@ -28,4 +28,9 @@ public class Member extends BaseEntity {
     public Member(long id) {
         super(id);
     }
+
+    public void changeBasicInfo(String nickname, String email) {
+        this.nickname = nickname;
+        this.email = email;
+    }
 }

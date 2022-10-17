@@ -2,10 +2,12 @@ package com.finalProject.weekOne.service.member;
 
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.member.MemberRepository;
+import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -31,5 +33,15 @@ public class MemberService {
                 .build();
 
         memberRepository.save(newMember);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username).orElse(null);
+    }
+
+    @Transactional
+    public void changeEmail(Member currentMember, ModifyDto modifyDto) {
+        currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
     }
 }
