@@ -41,7 +41,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeEmail(Member currentMember, ModifyDto modifyDto) {
+    public void changeBasicInfo(Member currentMember, ModifyDto modifyDto) {
         currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
     }
 }

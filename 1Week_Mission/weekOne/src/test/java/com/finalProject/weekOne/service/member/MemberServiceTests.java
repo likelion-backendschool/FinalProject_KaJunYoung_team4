@@ -3,7 +3,6 @@ package com.finalProject.weekOne.service.member;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class MemberServiceTests {
         dto.setNickname(nickname);
 
         // when
-        memberService.changeEmail(foundMember, dto);
+        memberService.changeBasicInfo(foundMember, dto);
 
         // then
         assertThat(foundMember.getEmail()).isEqualTo(email);
