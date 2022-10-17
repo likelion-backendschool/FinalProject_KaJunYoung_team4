@@ -12,49 +12,7 @@
         <div class="max-w-md w-full px-2 pt-4">
             <h1 class="font-bold text-lg">회원가입</h1>
 
-            <script>
-                let MemberJoin__submitDone = false;
-
-                function MemberJoin__submit(form) {
-                    if (MemberJoin__submitDone) {
-                        return;
-                    }
-
-                    form.username.value = form.username.value.trim();
-
-                    if (form.username.value.length == 0) {
-                        warningModal("로그인아이디를 입력해주세요.");
-                        form.username.focus();
-
-                        return;
-                    }
-
-                    form.password.value = form.password.value.trim();
-
-                    if (form.password.value.length == 0) {
-                        warningModal("로그인비밀번호를 입력해주세요.");
-                        form.password.focus();
-
-                        return;
-                    }
-
-                    form.email.value = form.email.value.trim();
-
-                    if (form.email.value.length == 0) {
-                        warningModal("이메일을 입력해주세요.");
-                        form.email.focus();
-
-                        return;
-                    }
-
-                    form.submit();
-                    MemberJoin__submitDone = true;
-                }
-            </script>
-
-
-            <form th:action method="POST" class="flex flex-col gap-3"
-                  onsubmit="MemberJoin__submit(this); return false;">
+            <form th:action method="POST" class="flex flex-col gap-3" onsubmit="return false;">
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">아이디</span>
@@ -73,6 +31,15 @@
 
                 <div class="form-control">
                     <label class="label">
+                        <span class="label-text">비밀번호 확인</span>
+                    </label>
+                    <input type="password" name="passwordChk" id="passwordChk"
+                           placeholder="비밀번호를 한번 더 입력해주세요." class="input input-bordered" maxlength="50">
+                    <span id="passwordChkMsg"></span>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
                         <span class="label-text">이메일</span>
                     </label>
                     <input type="email" name="email" placeholder="이메일" class="input input-bordered" maxlength="50">
@@ -85,7 +52,6 @@
             </form>
         </div>
 
-        </div>
     </section>
 
 </main>
