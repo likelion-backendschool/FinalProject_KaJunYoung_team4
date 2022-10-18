@@ -57,7 +57,7 @@
 
 ### **[발생한 이슈]**
 
-### 534-5.7.9 application-specific password required.
+### `534-5.7.9 application-specific password required.`
 
 [상황 설명]
 > 비밀번호 찾기 기능을 구현하던 중 이메일 발송 과정에서 아래와 같은 에러 구문 확인<br>
@@ -69,7 +69,7 @@
 learn more at 534 5.7.9 https://support.google.com/mail/?p=invalidsecondfactor h5-20020a63c005000000b004639c772878sm6868282pgg.48 - gsmtp
 ```
 
-### Empty encoded password
+### `Empty encoded password`
 [상황 설명]
 > 비밀번호 변경 기능을 구현하던 중 아래와 같은 에러 구문 확인<br>
 > log도 없이 단순히 아래 구문만 뜬게 이상하여 `Bean` 등록이 제대로 되어있는지, 로직에는 문제가 없는지 확인을 했지만 아무런 문제가 없었다.<br>
