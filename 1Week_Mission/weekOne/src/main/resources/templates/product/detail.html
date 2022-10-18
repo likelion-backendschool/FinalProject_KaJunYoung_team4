@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>글 작성</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-md w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">글 상세</h1>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">제목</span>
+        </label>
+        <input type="text" th:value="${product.getSubject()}" class="input input-bordered" readonly>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">가격</span>
+        </label>
+        <input type="text" th:value="${product.getPrice()}" class="input input-bordered" readonly>
+      </div>
+      <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(product.getAuthor().getUsername())}">
+        <a class="btn btn-primary" th:href="|@{/product/{productId}/modify (productId = ${product.id})}|">수정하기</a>
+        <a class="btn bg-red-500" th:href="|@{/product/{productId}/delete (productId = ${product.id})}|">삭제하기</a>
+      </div>
+    </div>
+
+  </section>
+</main>
+</body>
+</html>
