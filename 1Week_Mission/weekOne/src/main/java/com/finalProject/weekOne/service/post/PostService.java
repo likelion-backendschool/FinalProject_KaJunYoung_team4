@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +30,11 @@ public class PostService {
                 .build();
 
         postRepository.save(newPost);
+    }
+
+    /** 모든 Post를 불러오는 메소드
+     */
+    public List<Post> findAllPost() {
+        return postRepository.findAll();
     }
 }

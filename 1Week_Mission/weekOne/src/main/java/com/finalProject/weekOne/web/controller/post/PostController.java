@@ -1,6 +1,7 @@
 package com.finalProject.weekOne.web.controller.post;
 
 import com.finalProject.weekOne.domain.member.AuthMember;
+import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.service.post.PostService;
 import com.finalProject.weekOne.web.dto.post.CreatePostDto;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -23,6 +25,14 @@ import javax.validation.Valid;
 public class PostController {
 
     private final PostService postService;
+
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public String showPostList(Model model) {
+        List<Post> posts = postService.findAllPost();
+        model.addAttribute("posts", posts);
+        return "post/list";
+    }
 
     @GetMapping("/write")
     @PreAuthorize("isAuthenticated()")
