@@ -31,9 +31,51 @@
 > `Member` ➡️ `Post` ➡️ `Product`
 1. 회원가입, 로그인 및 로그아웃
 2. 회원 정보 수정
-3. 아이디 및 비밀번호 찾기
+3. 아이디 및 비밀번호 찾기, 회원가입 메일 발송
 4. `Post` CRUD
 5. `Product` CURD
+
+**발생한 이슈**
+
+### 534-5.7.9 application-specific password required.
+[상황 설명]
+> 비밀번호 찾기 메일을 보내는 것을 시도하던 중 아래와 같은 에러 구문을 마주쳤다.<br>
+> `application.yml`은 정상적으로 작성한 것을 확인하고, 다시 시도해보니 에러 코드가 바뀐 것을 확인하였다.<br>
+> 검색을 해보니 Google 앱 비밀번호를 설정해야 해결된다고 나와 있어 설정한 뒤 해결하였다.
+
+```java
+534-5.7.9 application-specific password required.
+learn more at 534 5.7.9 https://support.google.com/mail/?p=invalidsecondfactor h5-20020a63c005000000b004639c772878sm6868282pgg.48 - gsmtp
+```
+
+- [참고 블로그](https://dev-monkey-dugi.tistory.com/m/51)
+
+### Empty encoded password
+[상황 설명]
+> 비밀번호 변경을 구현하면서 위와 같은 에러 구문을 확인했다.<br>
+> 여러 블로그를 확인하면서 `Security`에 대한 문제라고 했지만, 나의 `SecurityConfig`에는 크게 문제될게 없어보였다.<br>
+> 로깅을 하며 확인해보니 `@AuthenticationPrincipal AuthMember authMember`로 불러온 `authMember`에서 `getPassword()`에 `null`이 찍히는 문제가 발생한 것이다.<br>
+> `password` 이외 다른 `filed`는 정상적으로 나오는 것을 확인하였고, `Repository`에서 `username`으로 조회한 `Member`에서는 `password`가 잘 나오는 것을 확인하였다.<br>
+> 때문에 아래와 같이 코드를 수정하였다.
+```java
+// 기존 코드
+@Transactional(readOnly = true)
+public boolean checkMatchPassword(Member member, String oldPassword) {
+    return passwordEncoder.matches(oldPassword, member.getPassword());
+}
+
+// 수정 코드
+@Transactional(readOnly = true)
+public boolean checkMatchPassword(String username, String oldPassword) {
+    Member currentMember = memberRepository.findByUsername(username).orElse(null);
+    if (currentMember != null) {
+        return passwordEncoder.matches(oldPassword, currentMember.getPassword());
+    }
+    return false;
+}
+```
+> 해당 버그가 발생한 이유는 천천히 다시 조사해봐야할 것 같다!
+- [참고 블로그](https://java8.tistory.com/m/509)
 
 **[특이사항]**
 
