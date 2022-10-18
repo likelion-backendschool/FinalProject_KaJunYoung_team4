@@ -55,6 +55,8 @@
 - 게시글 조회, 게시글 삭제
 - 게시글 수정
 
+---
+
 ### **[발생한 이슈]**
 
 ### `534-5.7.9 application-specific password required.`
@@ -99,7 +101,9 @@ public boolean checkMatchPassword(String username, String oldPassword) {
 ```
 > 해당 버그가 발생한 이유는 천천히 다시 조사해봐야할 것 같다!
 
-**[특이사항]**
+---
+
+### **[특이사항]**
 
 <!--
 구현 과정에서 아쉬웠던 점 / 궁금했던 점을 정리합니다.
@@ -112,3 +116,4 @@ public boolean checkMatchPassword(String username, String oldPassword) {
     - 1차 리팩토링은 기능 개발을 종료한 후, 스스로 코드를 다시 천천히 읽어보면서 진행합니다.
     - 2차 리팩토링은 피어리뷰를 통해 전달받은 다양한 의견과 피드백을 조율하여 진행합니다.
 -->
+
