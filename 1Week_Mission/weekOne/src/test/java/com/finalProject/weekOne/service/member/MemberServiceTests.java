@@ -2,7 +2,7 @@ package com.finalProject.weekOne.service.member;
 
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.web.dto.member.FindPwdDto;
-import com.finalProject.weekOne.web.dto.member.ModifyDto;
+import com.finalProject.weekOne.web.dto.member.modify.ModifyBaseInfoDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class MemberServiceTests {
         String email = "testUserChange@test.com";
         String nickname = "gomdori";
 
-        ModifyDto dto = new ModifyDto();
+        ModifyBaseInfoDto dto = new ModifyBaseInfoDto();
         dto.setEmail(email);
         dto.setNickname(nickname);
 

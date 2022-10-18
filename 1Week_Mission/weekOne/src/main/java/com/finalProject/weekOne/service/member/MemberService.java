@@ -4,13 +4,12 @@ import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.member.MemberRepository;
 import com.finalProject.weekOne.web.dto.member.FindPwdDto;
 import com.finalProject.weekOne.web.dto.member.MailDto;
-import com.finalProject.weekOne.web.dto.member.ModifyDto;
+import com.finalProject.weekOne.web.dto.member.modify.ModifyBaseInfoDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,9 +62,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeBasicInfo(String username, ModifyDto modifyDto) {
+    public void changeBasicInfo(String username, ModifyBaseInfoDto modifyBaseInfoDto) {
         Member currentMember = findByUsername(username);
-        currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
+        currentMember.changeBasicInfo(modifyBaseInfoDto.getNickname(), modifyBaseInfoDto.getEmail());
     }
 
     @Transactional

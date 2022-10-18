@@ -4,8 +4,8 @@ import com.finalProject.weekOne.domain.member.AuthMember;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.service.member.MemberService;
 import com.finalProject.weekOne.web.dto.member.FindPwdDto;
-import com.finalProject.weekOne.web.dto.member.ModifyDto;
-import com.finalProject.weekOne.web.dto.member.ModifyPasswordDto;
+import com.finalProject.weekOne.web.dto.member.modify.ModifyBaseInfoDto;
+import com.finalProject.weekOne.web.dto.member.modify.ModifyPasswordDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +65,9 @@ public class MemberController {
 
     @PostMapping("/modify")
     @PreAuthorize("isAuthenticated()")
-    public String doModifyBasicInfo(ModifyDto modifyDto, Model model, @AuthenticationPrincipal AuthMember authMember) {
+    public String doModifyBasicInfo(ModifyBaseInfoDto modifyBaseInfoDto, Model model, @AuthenticationPrincipal AuthMember authMember) {
 
-        memberService.changeBasicInfo(authMember.getUsername(), modifyDto);
+        memberService.changeBasicInfo(authMember.getUsername(), modifyBaseInfoDto);
 
         return "redirect:/member/modify";
     }

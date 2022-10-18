@@ -1,6 +1,6 @@
 package com.finalProject.weekOne.domain.member;
 
-import com.finalProject.weekOne.domain.app.base.BaseEntity;
+import com.finalProject.weekOne.domain.base.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

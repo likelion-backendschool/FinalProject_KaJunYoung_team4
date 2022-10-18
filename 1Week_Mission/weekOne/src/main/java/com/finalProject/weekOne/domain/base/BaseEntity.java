@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.domain.app.base;
+package com.finalProject.weekOne.domain.base;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;

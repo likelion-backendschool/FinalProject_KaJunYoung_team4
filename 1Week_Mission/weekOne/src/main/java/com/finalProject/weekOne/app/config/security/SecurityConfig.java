@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.domain.app.config.security;
+package com.finalProject.weekOne.app.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
