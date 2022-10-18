@@ -112,4 +112,13 @@ public class MemberService {
             e.printStackTrace();
         }
     }
+
+    @Transactional(readOnly = true)
+    public boolean checkMatchPassword(String username, String oldPassword) {
+        Member currentMember = memberRepository.findByUsername(username).orElse(null);
+        if (currentMember != null) {
+            return passwordEncoder.matches(oldPassword, currentMember.getPassword());
+        }
+        return false;
+    }
 }

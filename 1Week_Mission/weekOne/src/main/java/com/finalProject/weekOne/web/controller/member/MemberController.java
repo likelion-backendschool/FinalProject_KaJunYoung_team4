@@ -5,6 +5,7 @@ import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.service.member.MemberService;
 import com.finalProject.weekOne.web.dto.member.FindPwdDto;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
+import com.finalProject.weekOne.web.dto.member.ModifyPasswordDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,31 @@ public class MemberController {
         memberService.changeBasicInfo(authMember.getUsername(), modifyDto);
 
         return "redirect:/member/modify";
+    }
+
+    @GetMapping("/modifyPassword")
+    @PreAuthorize("isAuthenticated()")
+    public String showModifyPasswordPage(Model model, @AuthenticationPrincipal AuthMember authMember) {
+        Member currentMember = authMember.getMember();
+
+        model.addAttribute("modifyPasswordDto", new ModifyPasswordDto());
+
+        return "member/modifyPassword";
+    }
+
+    @PostMapping("/modifyPassword")
+    @PreAuthorize("isAuthenticated()")
+    public String doModifyPassword(@Valid ModifyPasswordDto modifyPasswordDto, BindingResult bindingResult, Model model, @AuthenticationPrincipal AuthMember authMember, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors() || !memberService.checkMatchPassword(authMember.getUsername(), modifyPasswordDto.getOldPassword())) {
+            model.addAttribute("modifyPasswordDto", modifyPasswordDto);
+            model.addAttribute("resultError", "비밀번호를 확인해주세요.");
+            return "member/modifyPassword";
+        }
+
+        memberService.changePassword(authMember.getUsername(), modifyPasswordDto.getNewPassword());
+        redirectAttributes.addFlashAttribute("resultSuccess", "비밀번호가 변경되었습니다.");
+
+        return "redirect:/member/modifyPassword";
     }
 
     @GetMapping("/findUsername")
