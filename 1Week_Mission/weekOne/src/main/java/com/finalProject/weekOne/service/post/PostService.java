@@ -5,8 +5,10 @@ import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.domain.post.PostRepository;
 import com.finalProject.weekOne.web.dto.post.CreatePostDto;
+import com.finalProject.weekOne.web.dto.post.ModifyPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,5 +52,19 @@ public class PostService {
      */
     public void removePost(Post currentPost) {
         postRepository.delete(currentPost);
+    }
+
+    /**
+     * Post를 수정하는 메소드
+     *
+     * @param currentPost 수정하기 전 Post
+     * @param modifyPostDto Post의 subject, content를 가지고 있는 DTO
+     */
+    @Transactional
+    public void modifyPost(Post currentPost, ModifyPostDto modifyPostDto) {
+        currentPost.modifyPost(modifyPostDto.getSubject(),
+                modifyPostDto.getContent(),
+                Ut.html.markdown(modifyPostDto.getContent())
+        );
     }
 }

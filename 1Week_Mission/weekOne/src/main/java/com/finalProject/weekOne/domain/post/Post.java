@@ -28,4 +28,10 @@ public class Post extends BaseEntity {
         super(id);
     }
 
+    public void modifyPost(String subject, String content, String contentHtml) {
+        this.subject = subject;
+        this.content = content;
+        this.contentHtml = contentHtml;
+    }
+
 }

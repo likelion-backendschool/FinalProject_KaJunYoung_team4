@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>글 작성</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-md w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">글 작성</h1>
+
+      <form th:action method="POST" class="flex flex-col gap-3" th:object="${modifyPostDto}" onsubmit="postSave(this); return false;">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">제목</span>
+          </label>
+          <input autofocus type="text" th:value="${post.getSubject()}" name="subject" id="subject" placeholder="제목을 입력해주세요." class="input input-bordered" maxlength="50">
+          <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}">subject Error</small>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">내용</span>
+          </label>
+          <input type="hidden" name="content" id="content"/>
+          <div id="editor"></div>
+        </div>
+
+        <div class="grid grid-cols-1 mt-2">
+          <input class="btn btn-primary" type="submit" value="수정하기">
+        </div>
+      </form>
+    </div>
+
+  </section>
+    <script th:inline="javascript">
+      const params = /*[[ ${post.getContent()} ]]*/ null;
+
+      const editor = new toastui.Editor({
+        el: document.querySelector("#editor"),
+        language: 'ko-KR',
+        height: "500px",
+        placeholder: "내용을 입력해주세요",
+      })
+
+      editor.setMarkdown(params);
+
+      function postSave(form) {
+        form.subject.value = form.subject.value.trim();
+        if ( form.subject.value.length === 0 ) {
+          warningModal("제목을 입력해주세요.");
+          form.subject.focus();
+          return;
+        }
+
+        const markdown = editor.getMarkdown();
+        console.log(markdown);
+        form.content.value = markdown.trim();
+
+        if (form.content.value.length === 0) {
+          warningModal("내용을 입력해주세요.");
+          editor.focus();
+
+          return;
+        }
+
+        form.submit();
+      }
+    </script>
+
+</main>
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.finalProject.weekOne.domain.member.AuthMember;
 import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.service.post.PostService;
 import com.finalProject.weekOne.web.dto.post.CreatePostDto;
+import com.finalProject.weekOne.web.dto.post.ModifyPostDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,6 +64,32 @@ public class PostController {
         postService.savePost(authMember.getMember(), createPostDto);
 
         return "post/write";
+    }
+
+    @GetMapping("/{id}/modify")
+    @PreAuthorize("isAuthenticated()")
+    public String showPostUpdatePage(@PathVariable Long id, Model model) {
+        Post currentPost = postService.findByPostId(id);
+        model.addAttribute("post", currentPost);
+        model.addAttribute("modifyPostDto", new ModifyPostDto());
+        return "post/modify";
+    }
+
+    @PostMapping("/{id}/modify")
+    @PreAuthorize("isAuthenticated()")
+    public String doPostUpdate(@Valid ModifyPostDto modifyPostDto,
+                               BindingResult bindingResult, Model model,
+                               @PathVariable Long id) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("modifyPostDto", modifyPostDto);
+            return "post/write";
+        }
+        log.info("modifyPostDto.getSubject()={}", modifyPostDto.getSubject());
+        log.info("modifyPostDto.getContent()={}", modifyPostDto.getContent());
+        Post currentPost = postService.findByPostId(id);
+        postService.modifyPost(currentPost, modifyPostDto);
+
+        return "redirect:/post/{id}";
     }
 
     @GetMapping("/{id}/delete")
