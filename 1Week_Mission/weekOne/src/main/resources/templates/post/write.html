@@ -29,6 +29,13 @@
 
         <div class="form-control">
           <label class="label">
+            <span class="label-text">해시태그</span>
+          </label>
+          <input autofocus type="text" th:field="*{hashTagContents}" placeholder="#태그1 #태그2" class="input input-bordered" maxlength="50">
+        </div>
+
+        <div class="form-control">
+          <label class="label">
             <span class="label-text">내용</span>
           </label>
           <input type="hidden" name="content" id="content"/>

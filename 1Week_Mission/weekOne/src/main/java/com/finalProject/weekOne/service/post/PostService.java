@@ -4,9 +4,11 @@ import com.finalProject.weekOne.domain.app.util.Ut;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.domain.post.PostRepository;
+import com.finalProject.weekOne.service.tag.HashTagService;
 import com.finalProject.weekOne.web.dto.post.CreatePostDto;
 import com.finalProject.weekOne.web.dto.post.ModifyPostDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +16,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+
+    private final HashTagService hashTagService;
 
     /** 새로운 게시물을 저장하는 메소드
      * @param member 현재 로그인된 Member
@@ -31,7 +36,11 @@ public class PostService {
                 .author(member)
                 .build();
 
-        return postRepository.save(newPost);
+        postRepository.save(newPost);
+
+        hashTagService.applyHashTags(newPost, createPostDto.getHashTagContents());
+
+        return newPost;
     }
 
     /** id로 Post 객체를 찾는 메소드
@@ -66,5 +75,7 @@ public class PostService {
                 modifyPostDto.getContent(),
                 Ut.html.markdown(modifyPostDto.getContent())
         );
+
+        hashTagService.applyHashTags(currentPost, modifyPostDto.getHashTagContents());
     }
 }

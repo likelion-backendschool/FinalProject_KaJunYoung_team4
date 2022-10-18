@@ -27,6 +27,13 @@
 
       <div class="form-control">
         <label class="label">
+          <span class="label-text">해시태그</span>
+        </label>
+        <th:block th:utext="${post.extra_hashTagLinks}"/>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
           <span class="label-text">내용</span>
         </label>
         <div th:utext="${post.getContentHtml()}" class="border-gray-300 border-2 rounded-md p-2"></div>

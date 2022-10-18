@@ -11,4 +11,6 @@ public class CreatePostDto {
     private String subject;
 
     private String content;
+
+    private String hashTagContents;
 }
