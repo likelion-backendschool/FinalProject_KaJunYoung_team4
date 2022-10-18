@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,6 +33,14 @@ public class PostController {
         List<Post> posts = postService.findAllPost();
         model.addAttribute("posts", posts);
         return "post/list";
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String showPostDetail(@PathVariable Long id, Model model) {
+        Post currentPost = postService.findByPostId(id);
+        model.addAttribute("post", currentPost);
+        return "post/detail";
     }
 
     @GetMapping("/write")

@@ -32,6 +32,13 @@ public class PostService {
         postRepository.save(newPost);
     }
 
+    /** id로 Post 객체를 찾는 메소드
+     * @param id 찾으려는 post.id 번호
+     */
+    public Post findByPostId(Long id) {
+        return postRepository.findById(id).orElse(null);
+    }
+
     /** 모든 Post를 불러오는 메소드
      */
     public List<Post> findAllPost() {
