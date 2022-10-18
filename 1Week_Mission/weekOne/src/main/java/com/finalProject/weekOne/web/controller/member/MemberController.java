@@ -3,6 +3,7 @@ package com.finalProject.weekOne.web.controller.member;
 import com.finalProject.weekOne.domain.member.AuthMember;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.service.member.MemberService;
+import com.finalProject.weekOne.web.dto.member.FindPwdDto;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
@@ -83,5 +84,21 @@ public class MemberController {
         Member currentMember = memberService.findByEmail(email);
         redirectAttributes.addFlashAttribute("result", currentMember.getUsername());
         return "redirect:/member/findUsername";
+    }
+
+    @GetMapping("/findPassword")
+    @PreAuthorize("isAnonymous()")
+    public String showFindPasswordPage() {
+
+        return "member/findPassword";
+    }
+
+    @PostMapping("/findPassword")
+    @PreAuthorize("isAnonymous()")
+    public String doFindPasswordByUsernameAndEmail(FindPwdDto findPwdDto, RedirectAttributes redirectAttributes) {
+        String message = "메일함을 확인해주세요.(%s)".formatted(findPwdDto.getEmail());
+        memberService.sendFindPasswordMail(findPwdDto);
+        redirectAttributes.addFlashAttribute("result", message);
+        return "redirect:/member/findPassword";
     }
 }
