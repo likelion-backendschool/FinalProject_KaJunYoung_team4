@@ -27,13 +27,20 @@
 
       <div class="form-control">
         <label class="label">
+          <span class="label-text">작가</span>
+        </label>
+        <input type="text" th:value="${product.getAuthor().nickname}" class="input input-bordered" readonly>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
           <span class="label-text">가격</span>
         </label>
         <input type="text" th:value="${product.getPrice()}" class="input input-bordered" readonly>
       </div>
       <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(product.getAuthor().getUsername())}">
         <a class="btn btn-primary" th:href="|@{/product/{productId}/modify (productId = ${product.id})}|">수정하기</a>
-        <a class="btn bg-red-500" th:href="|@{/product/{productId}/delete (productId = ${product.id})}|">삭제하기</a>
+        <a onclick="return confirm('정말로 삭제하시겠습니까?')" class="btn bg-red-500" th:href="|@{/product/{productId}/delete (productId = ${product.id})}|">삭제하기</a>
       </div>
     </div>
 

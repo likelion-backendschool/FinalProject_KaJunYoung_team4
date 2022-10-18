@@ -18,7 +18,7 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(callSuper = true)
 public class Product extends BaseEntity {
-    
+
     private String subject;
 
     private int price;
@@ -33,5 +33,10 @@ public class Product extends BaseEntity {
 
     public Product(long id) {
         super(id);
+    }
+
+    public void modifyProduct(String subject, int price) {
+        this.subject = subject;
+        this.price = price;
     }
 }

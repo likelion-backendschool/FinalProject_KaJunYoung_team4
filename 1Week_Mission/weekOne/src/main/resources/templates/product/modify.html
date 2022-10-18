@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>상품 수정</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-md w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">상품 수정</h1>
+
+      <form th:action method="POST" class="flex flex-col gap-3" th:object="${modifyProductDto}" onsubmit="postSave(this); return false;">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">제목</span>
+          </label>
+          <input autofocus type="text" th:value="${product.getSubject()}" name="subject" id="subject" placeholder="제목을 입력해주세요." class="input input-bordered" maxlength="50">
+          <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}">subject Error</small>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">가격</span>
+          </label>
+          <input autofocus type="number" th:value="${product.getPrice()}" name="price" id="price" placeholder="가격을 입력해주세요." class="input input-bordered" maxlength="50">
+          <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">price Error</small>
+        </div>
+
+        <div class="grid grid-cols-1 mt-2">
+          <input class="btn btn-primary" type="submit" value="수정하기">
+        </div>
+      </form>
+    </div>
+
+  </section>
+</main>
+</body>
+</html>
