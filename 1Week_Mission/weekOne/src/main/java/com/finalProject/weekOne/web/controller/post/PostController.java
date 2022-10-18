@@ -56,14 +56,15 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     public String doPostWrite(@Valid CreatePostDto createPostDto,
                               BindingResult bindingResult, Model model,
+                              RedirectAttributes redirectAttributes,
                               @AuthenticationPrincipal AuthMember authMember) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("createPostDto", createPostDto);
             return "post/write";
         }
-        postService.savePost(authMember.getMember(), createPostDto);
-
-        return "post/write";
+        Post savedPost = postService.savePost(authMember.getMember(), createPostDto);
+        redirectAttributes.addAttribute("id", savedPost.getId());
+        return "redirect:/post/{id}";
     }
 
     @GetMapping("/{id}/modify")

@@ -22,7 +22,7 @@ public class PostService {
      * @param member 현재 로그인된 Member
      * @param createPostDto subject, content가 포함된 DTO
      */
-    public void savePost(Member member, CreatePostDto createPostDto) {
+    public Post savePost(Member member, CreatePostDto createPostDto) {
         Post newPost = Post.builder()
                 .subject(createPostDto.getSubject())
                 .content(createPostDto.getContent())
@@ -31,7 +31,7 @@ public class PostService {
                 .author(member)
                 .build();
 
-        postRepository.save(newPost);
+        return postRepository.save(newPost);
     }
 
     /** id로 Post 객체를 찾는 메소드
