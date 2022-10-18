@@ -44,4 +44,11 @@ public class PostService {
     public List<Post> findAllPost() {
         return postRepository.findAll();
     }
+
+    /** Post를 삭제하는 메소드
+     * @param currentPost id를 통해 찾은 Post
+     */
+    public void removePost(Post currentPost) {
+        postRepository.delete(currentPost);
+    }
 }

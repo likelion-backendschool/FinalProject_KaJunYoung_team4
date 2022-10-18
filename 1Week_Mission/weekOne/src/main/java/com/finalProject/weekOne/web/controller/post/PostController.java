@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -62,5 +63,18 @@ public class PostController {
         postService.savePost(authMember.getMember(), createPostDto);
 
         return "post/write";
+    }
+
+    @GetMapping("/{id}/delete")
+    @PreAuthorize("isAuthenticated()")
+    public String doPostDelete(@PathVariable Long id,
+                               @AuthenticationPrincipal AuthMember authMember,
+                               RedirectAttributes redirectAttributes) {
+        Post currentPost = postService.findByPostId(id);
+        if (!currentPost.getAuthor().equals(authMember.getMember())) {
+            redirectAttributes.addFlashAttribute("resultError", "삭제 권한이 없습니다.");
+        }
+        postService.removePost(currentPost);
+        return "redirect:/post/list";
     }
 }

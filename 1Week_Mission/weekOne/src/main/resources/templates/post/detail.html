@@ -31,8 +31,9 @@
         </label>
         <div th:utext="${post.getContentHtml()}" class="border-gray-300 border-2 rounded-md p-2"></div>
       </div>
-      <div class="grid grid-cols-1 mt-2" th:if="${#authentication.getName().equals(post.getAuthor().getUsername())}">
-        <a class="btn btn-primary" th:href="|@{/post/${post.id}/modify}|">수정하기</a>
+      <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(post.getAuthor().getUsername())}">
+        <a class="btn btn-primary" th:href="|@{/post/{postId}/modify (postId = ${post.id})}|">수정하기</a>
+        <a class="btn bg-red-500" th:href="|@{/post/{postId}/delete (postId = ${post.id})}|">삭제하기</a>
       </div>
     </div>
 
