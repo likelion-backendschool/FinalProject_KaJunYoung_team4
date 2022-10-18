@@ -1,6 +1,7 @@
 package com.finalProject.weekOne.service.member;
 
 import com.finalProject.weekOne.domain.member.Member;
+import com.finalProject.weekOne.web.dto.member.FindPwdDto;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,7 +73,7 @@ class MemberServiceTests {
         assertThat(passwordEncoder.matches(rawPassword, foundMember.getPassword())).isTrue();
 
         // when
-        memberService.changePassword(foundMember, changePassword);
+        memberService.changePassword(foundMember.getUsername(), changePassword);
 
         // then
         assertThat(passwordEncoder.matches(changePassword, foundMember.getPassword())).isTrue();
@@ -90,6 +91,25 @@ class MemberServiceTests {
 
         // then
         assertThat(foundMember.getUsername()).isEqualTo(currentMember.getUsername());
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기")
+    void findMemberPassword() {
+        // given
+        Member foundMember = memberService.findByUsername("testUser");
+        String username = "testUser";
+        String email = "kawnsdud@gmail.com";
+        FindPwdDto dto = new FindPwdDto();
+        dto.setUsername(username);
+        dto.setEmail(email);
+
+        // when
+        memberService.sendFindPasswordMail(dto);
+
+        // then
+        String currentPwd = "testUser1234!";
+        assertThat(passwordEncoder.matches(currentPwd, foundMember.getPassword())).isFalse();
     }
 
 }

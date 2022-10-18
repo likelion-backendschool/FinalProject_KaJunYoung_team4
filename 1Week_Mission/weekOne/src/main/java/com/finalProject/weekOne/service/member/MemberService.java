@@ -2,15 +2,23 @@ package com.finalProject.weekOne.service.member;
 
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.member.MemberRepository;
+import com.finalProject.weekOne.web.dto.member.FindPwdDto;
+import com.finalProject.weekOne.web.dto.member.MailDto;
 import com.finalProject.weekOne.web.dto.member.ModifyDto;
 import com.finalProject.weekOne.web.dto.member.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -19,6 +27,11 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+
+    private final JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String FROM;
 
     /**
      * 새로운 회원을 저장하는 메소드
@@ -48,11 +61,48 @@ public class MemberService {
         currentMember.changeBasicInfo(modifyDto.getNickname(), modifyDto.getEmail());
     }
 
-    public void changePassword(Member currentMember, String password) {
+    @Transactional
+    public void changePassword(String username, String password) {
+        Member currentMember = findByUsername(username);
         currentMember.changePassword(passwordEncoder.encode(password));
     }
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email).orElse(null);
+    }
+
+    public void sendFindPasswordMail(FindPwdDto dto) {
+        if (!existMemberCheck(dto.getUsername(), dto.getEmail())) {
+            return;
+        }
+        String tempPassword = getRandomPassword();
+        changePassword(dto.getUsername(), tempPassword);
+        MailDto mailDto = MailDto.builder()
+                .title("MUTBOOK 비밀번호 찾기")
+                .message(tempPassword)
+                .email(dto.getEmail())
+                .build();
+        sendMail(mailDto);
+    }
+
+    public boolean existMemberCheck(String username, String email) {
+        return memberRepository.existsByUsernameAndEmail(username, email);
+    }
+
+    public String getRandomPassword() {
+        return UUID.randomUUID().toString().substring(0, 10);
+    }
+
+    public void sendMail(MailDto mailDto) {
+        SimpleMailMessage sm = new SimpleMailMessage();
+        try {
+            sm.setTo(mailDto.getEmail());
+            sm.setFrom(FROM);
+            sm.setSubject(mailDto.getTitle());
+            sm.setText(mailDto.getMessage());
+            javaMailSender.send(sm);
+        } catch (MailException e) {
+            e.printStackTrace();
+        }
     }
 }
