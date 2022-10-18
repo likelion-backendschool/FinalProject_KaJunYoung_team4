@@ -56,49 +56,83 @@ public class MemberService {
         memberRepository.save(newMember);
     }
 
+    /**
+     * Username을 통해 Member 객체를 찾는 메소드
+     * @param username Member의 로그인 아이디
+     */
     @Transactional(readOnly = true)
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username).orElse(null);
     }
 
+    /**
+     * 필명, 이메일을 바꾸는 메소드
+     * @param username Member의 로그인 아이디
+     * @param modifyBaseInfoDto 변경할 필명, 이메일이 담긴 DTO
+     */
     @Transactional
     public void changeBasicInfo(String username, ModifyBaseInfoDto modifyBaseInfoDto) {
         Member currentMember = findByUsername(username);
         currentMember.changeBasicInfo(modifyBaseInfoDto.getNickname(), modifyBaseInfoDto.getEmail());
     }
 
+    /**
+     * 비밀번호를 바꾸는 메소드
+     * @param username Member의 로그인 아이디
+     * @param password 변경할 비밀번호
+     */
     @Transactional
     public void changePassword(String username, String password) {
         Member currentMember = findByUsername(username);
         currentMember.changePassword(passwordEncoder.encode(password));
     }
 
+    /**
+     * 이메일을 통해 Member 객체를 찾는 메소드
+     * @param email 가입 시 입력한 Email
+     */
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email).orElse(null);
     }
 
-    public void sendFindPasswordMail(FindPwdDto dto) {
-        if (!existMemberCheck(dto.getUsername(), dto.getEmail())) {
+    /**
+     * 비밀번호를 찾기 위한 메소드
+     * @param findPwdDto 비밀번호 찾기에 필요한 아이디와 이메일이 담긴 DTO
+     */
+    public void sendFindPasswordMail(FindPwdDto findPwdDto) {
+        if (!existMemberCheck(findPwdDto.getUsername(), findPwdDto.getEmail())) {
             return;
         }
         String tempPassword = getRandomPassword();
-        changePassword(dto.getUsername(), tempPassword);
+        changePassword(findPwdDto.getUsername(), tempPassword);
         MailDto mailDto = MailDto.builder()
                 .title("[MUTBOOK] 비밀번호 찾기")
                 .message(tempPassword)
-                .email(dto.getEmail())
+                .email(findPwdDto.getEmail())
                 .build();
         sendMail(mailDto);
     }
 
+    /**
+     * 아이디와 이메일이 일치하는 Member 객체가 있는지 조회
+     * @param username Member의 로그인 아이디
+     * @param email 가입 시 입력한 Email
+     */
     public boolean existMemberCheck(String username, String email) {
         return memberRepository.existsByUsernameAndEmail(username, email);
     }
 
+    /**
+     * 랜덤 비밀번호를 UUID를 통해 15자리 String을 생성
+     */
     public String getRandomPassword() {
         return UUID.randomUUID().toString().substring(0, 10);
     }
 
+    /**
+     * 이메일을 보내는 메소드
+     * @param mailDto 받는 사람의 이메일, 제목, 내용을 담는 DTO
+     */
     public void sendMail(MailDto mailDto) {
         SimpleMailMessage sm = new SimpleMailMessage();
         try {
@@ -112,6 +146,11 @@ public class MemberService {
         }
     }
 
+    /**
+     * 비밀번호 변경을 위해 현재 비밀번호와 맞는지 비교하는 메소드
+     * @param username 현재 유저의 로그인 아이디
+     * @param oldPassword 기존 로그인 비밀번호
+     */
     @Transactional(readOnly = true)
     public boolean checkMatchPassword(String username, String oldPassword) {
         Member currentMember = memberRepository.findByUsername(username).orElse(null);
