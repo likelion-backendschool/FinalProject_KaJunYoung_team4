@@ -47,6 +47,13 @@ public class MemberService {
                 .authLevel(3)
                 .build();
 
+        MailDto mailDto = MailDto.builder()
+                .title("[MUTBOOK] 회원가입 완료")
+                .message("회원가입을 축하합니다.")
+                .email(signUpDto.getEmail())
+                .build();
+        sendMail(mailDto);
+
         memberRepository.save(newMember);
     }
 
@@ -78,7 +85,7 @@ public class MemberService {
         String tempPassword = getRandomPassword();
         changePassword(dto.getUsername(), tempPassword);
         MailDto mailDto = MailDto.builder()
-                .title("MUTBOOK 비밀번호 찾기")
+                .title("[MUTBOOK] 비밀번호 찾기")
                 .message(tempPassword)
                 .email(dto.getEmail())
                 .build();
