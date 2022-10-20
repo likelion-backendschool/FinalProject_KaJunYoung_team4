@@ -17,7 +17,7 @@
 
 ## 1주차 미션 요약
 
-### **[접근 방법]**
+### **[🚥 접근 방법]**
 <!-- 
 체크리스트를 중심으로 각각의 기능을 구현하기 위해 어떤 생각을 했는지 정리합니다.
 
@@ -57,7 +57,7 @@
 
 ---
 
-### **[발생한 이슈]**
+### **[😦 발생한 이슈]**
 
 ### `534-5.7.9 application-specific password required.`
 
@@ -119,7 +119,7 @@ public boolean checkMatchPassword(String username, String oldPassword) {
     - 2차 리팩토링은 피어리뷰를 통해 전달받은 다양한 의견과 피드백을 조율하여 진행합니다.
 -->
 
-### [Refactoring]
+### [🛠 Refactoring]
 [`HashTag`, `Keyword`]
 > 강사님의 [강의 코드](https://github.com/jhs512/sb_exam_2022_09_05__app10)를 보며 기능 구현을 구현했다.<br>
 > 구현을 하는 과정에서 처음보는 `Stream`도 있었고, `extra.get("hashTags")`이라는 함수의 용도를 제대로 이해하지 못했다.<br>
@@ -137,3 +137,33 @@ public boolean checkMatchPassword(String username, String oldPassword) {
 [`JavaDoc`]
 > 대부분의 `Service`에는 `JavaDoc`을 작성해놓았지만, 이외 부분에는 제대로 작성되지 않았다.<br>
 > 추후 리팩터링을 진행하면서 작성되지 않은 메소드에 `JavaDoc`을 추가할 예정이다.
+
+### [😎 Review]
+[`WildCard`]
+> IntelliJ의 설정 때문에 import가 되면서 자동으로 wildcard로 선언되는게 많아졌다.<br>
+> wildcard를 사용할 때의 문제점은 명확한 import를 통해 실수를 줄일 수 있으며, 다른 패키지에 동일한 클래스가 존재할 경우 충돌이 발생할 수 있다.<br>
+> [참고 블로그](https://blog.marcnuri.com/intellij-idea-how-to-disable-wildcard-imports)
+```java
+// BaseEntity
+import lombok.*;
+import javax.persistence.*;
+```
+
+[`유효성 검증`]
+1. 회원가입 시 Email 중복 체킹
+2. Email을 이용한 아이디 찾기 -> 올바르지 않거나 null값 체킹
+
+[`Bug`]
+1. `@CreatedDate`, `@LastModifiedDate` 미작동
+> Application 클래스에 `@EnableJpaAuditing` 추가!
+
+[`Code`]
+1. `changeBasicInfo()` 메소드 오버로딩
+> 비밀번호 변경에 대한 메소드 네이밍 또한 `nickname`, `email`을 변경하는 메소드와 같이 `changeBasicInfo()`으로 변경
+2. `FindPwdDtd` 빌더 적용
+> 기존에 사용하기 위해 선언했던 `Builder`를 사용하지 않고 방치한 상태<br>
+> `@Setter` 대신 `Builder`로 다시 적용
+3. `@ManyToOne(fetch = LAZY)`
+> `@ManyToOne`의 default 옵션이 `LAZY`이기 때문에 굳이 작성할 필요 없음
+4. 불필요한 정보 넘기지 않기
+> `DTO` 혹은 `VO`를 활용해서 View에 불필요한 정보를 제외하기
