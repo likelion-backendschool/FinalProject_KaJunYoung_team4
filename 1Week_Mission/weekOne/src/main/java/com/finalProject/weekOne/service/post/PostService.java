@@ -1,6 +1,6 @@
 package com.finalProject.weekOne.service.post;
 
-import com.finalProject.weekOne.domain.app.util.Ut;
+import com.finalProject.weekOne.app.util.Ut;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.domain.post.PostRepository;

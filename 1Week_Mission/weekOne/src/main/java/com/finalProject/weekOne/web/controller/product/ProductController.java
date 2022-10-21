@@ -1,7 +1,7 @@
 package com.finalProject.weekOne.web.controller.product;
 
 import com.finalProject.weekOne.domain.member.AuthMember;
-import com.finalProject.weekOne.service.ProductService;
+import com.finalProject.weekOne.service.product.ProductService;
 import com.finalProject.weekOne.domain.product.Product;
 import com.finalProject.weekOne.web.dto.product.CreateProductDto;
 import com.finalProject.weekOne.web.dto.product.ModifyProductDto;
