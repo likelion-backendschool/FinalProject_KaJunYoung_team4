@@ -49,6 +49,16 @@ public class MemberController {
             model.addAttribute("signUpDto", signUpDto);
             return "member/signup";
         }
+        if (memberService.existByUsername(signUpDto.getUsername())) {
+            model.addAttribute("signUpDto", signUpDto);
+            model.addAttribute("usernameError", "이미 존재하는 아이디입니다.");
+            return "member/signup";
+        }
+        if (memberService.existMemberEmail(signUpDto.getEmail())) {
+            model.addAttribute("signUpDto", signUpDto);
+            model.addAttribute("emailError", "이미 존재하는 이메일입니다.");
+            return "member/signup";
+        }
         memberService.join(signUpDto);
         return "redirect:/member/login";
     }
@@ -91,7 +101,7 @@ public class MemberController {
             return "member/modifyPassword";
         }
 
-        memberService.changePassword(authMember.getUsername(), modifyPasswordDto.getNewPassword());
+        memberService.changeBasicInfo(authMember.getUsername(), modifyPasswordDto.getNewPassword());
         redirectAttributes.addFlashAttribute("resultSuccess", "비밀번호가 변경되었습니다.");
 
         return "redirect:/member/modifyPassword";
@@ -106,7 +116,15 @@ public class MemberController {
 
     @PostMapping("/findUsername")
     @PreAuthorize("isAnonymous()")
-    public String doFindMemberByEmail(String email, RedirectAttributes redirectAttributes) {
+    public String doFindMemberByEmail(String email, RedirectAttributes redirectAttributes, Model model) {
+        if (email == null || email.length() == 0) {
+            model.addAttribute("emailLengthError", "이메일을 입력해주세요.");
+            return "member/findUsername";
+        }
+        if (!memberService.existMemberEmail(email)) {
+            model.addAttribute("emailError", "존재하지 않는 이메일입니다.");
+            return "member/findUsername";
+        }
         Member currentMember = memberService.findByEmail(email);
         redirectAttributes.addFlashAttribute("result", currentMember.getUsername());
         return "redirect:/member/findUsername";

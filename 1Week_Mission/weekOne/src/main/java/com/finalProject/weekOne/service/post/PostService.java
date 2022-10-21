@@ -1,6 +1,6 @@
 package com.finalProject.weekOne.service.post;
 
-import com.finalProject.weekOne.domain.app.util.Ut;
+import com.finalProject.weekOne.app.util.Ut;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.post.Post;
 import com.finalProject.weekOne.domain.post.PostRepository;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,7 +31,6 @@ public class PostService {
                 .subject(createPostDto.getSubject())
                 .content(createPostDto.getContent())
                 .contentHtml(Ut.html.markdown(createPostDto.getContent()))
-                .createDate(LocalDateTime.now())
                 .author(member)
                 .build();
 

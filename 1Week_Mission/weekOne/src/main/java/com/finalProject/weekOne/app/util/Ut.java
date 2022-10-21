@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.domain.app.util;
+package com.finalProject.weekOne.app.util;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;

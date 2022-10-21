@@ -23,6 +23,7 @@
                     <input autofocus type="text" th:field="*{username}" placeholder="아이디" class="input input-bordered"
                            maxlength="50">
                     <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</small>
+                    <span th:if="${usernameError}" th:text="${usernameError}" class="text-red-500 mt-2"></span>
                 </div>
 
                 <div class="form-control">
@@ -57,6 +58,7 @@
                     </label>
                     <input type="email" th:field="*{email}" placeholder="이메일" class="input input-bordered" maxlength="50">
                     <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</small>
+                    <span th:if="${emailError}" th:text="${emailError}" class="text-red-500 mt-2"></span>
                 </div>
 
                 <div class="grid grid-cols-2 mt-2 gap-2">

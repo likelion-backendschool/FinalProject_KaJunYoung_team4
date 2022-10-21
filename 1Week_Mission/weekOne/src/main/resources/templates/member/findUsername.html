@@ -24,6 +24,8 @@
           </label>
           <input th:if="${result}" type="text" autofocus th:value="${result}" class="input input-bordered" maxlength="50" readonly>
           <input th:unless="${result}"type="email" autofocus name="email" placeholder="이메일을 입력해주세요." class="input input-bordered" maxlength="50">
+          <span th:if="${emailError}" th:text="${emailError}" class="text-red-500 mt-2"></span>
+          <span th:if="${emailLengthError}" th:text="${emailLengthError}" class="text-red-500 mt-2"></span>
         </div>
 
         <div class="grid grid-cols-1 mt-2">

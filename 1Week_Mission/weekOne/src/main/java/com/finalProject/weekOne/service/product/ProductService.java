@@ -1,6 +1,5 @@
 package com.finalProject.weekOne.service.product;
 
-import com.finalProject.weekOne.domain.app.util.Ut;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.product.Product;
 import com.finalProject.weekOne.domain.product.ProductRepository;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,7 +30,6 @@ public class ProductService {
                 .subject(createProductDto.getSubject())
                 .price(createProductDto.getPrice())
                 .author(member)
-                .createDate(LocalDateTime.now())
                 .build();
 
         productRepository.save(newProduct);

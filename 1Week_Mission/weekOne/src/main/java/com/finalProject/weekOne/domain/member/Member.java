@@ -1,7 +1,11 @@
 package com.finalProject.weekOne.domain.member;
 
 import com.finalProject.weekOne.domain.base.BaseEntity;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;

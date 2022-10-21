@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -42,7 +41,6 @@ public class MemberService {
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
                 .email(signUpDto.getEmail())
-                .createDate(LocalDateTime.now())
                 .authLevel(3)
                 .build();
 
@@ -82,7 +80,7 @@ public class MemberService {
      * @param password 변경할 비밀번호
      */
     @Transactional
-    public void changePassword(String username, String password) {
+    public void changeBasicInfo(String username, String password) {
         Member currentMember = findByUsername(username);
         currentMember.changePassword(passwordEncoder.encode(password));
     }
@@ -104,7 +102,7 @@ public class MemberService {
             return;
         }
         String tempPassword = getRandomPassword();
-        changePassword(findPwdDto.getUsername(), tempPassword);
+        changeBasicInfo(findPwdDto.getUsername(), tempPassword);
         MailDto mailDto = MailDto.builder()
                 .title("[MUTBOOK] 비밀번호 찾기")
                 .message(tempPassword)
@@ -120,6 +118,22 @@ public class MemberService {
      */
     public boolean existMemberCheck(String username, String email) {
         return memberRepository.existsByUsernameAndEmail(username, email);
+    }
+
+    /**
+     * 이메일이 일치하는 Member 객체가 있는지 조회
+     * @param email 회원가입 시 입력한 Email
+     */
+    public boolean existMemberEmail(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    /**
+     * 이메일이 일치하는 Member 객체가 있는지 조회
+     * @param username 회원가입 시 입력한 로그인 아이디
+     */
+    public boolean existByUsername(String username) {
+        return memberRepository.existsByUsername(username);
     }
 
     /**
