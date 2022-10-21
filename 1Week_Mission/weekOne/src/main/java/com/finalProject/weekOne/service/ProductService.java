@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.service.product;
+package com.finalProject.weekOne.service;
 
 import com.finalProject.weekOne.domain.app.util.Ut;
 import com.finalProject.weekOne.domain.member.Member;
