@@ -36,7 +36,7 @@
         <label class="label">
           <span class="label-text">내용</span>
         </label>
-        <div th:utext="${post.getContentHtml()}" class="border-gray-300 border-2 rounded-md p-2"></div>
+        <div id="content" class="border-gray-300 border-2 rounded-md p-2"></div>
       </div>
       <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(post.getAuthor().getUsername())}">
         <a class="btn btn-primary" th:href="|@{/post/{postId}/modify (postId = ${post.id})}|">수정하기</a>
@@ -45,6 +45,20 @@
     </div>
 
   </section>
+    <script th:inline="javascript">
+      const Editor = toastui.Editor.factory;
+
+      /*<![CDATA[*/
+      const contentMarkdown = [[${post.content}]];
+      /*]]>*/
+
+      const content = new Editor({
+        el: document.querySelector('#content'),
+        height: '500px',
+        viewer: true,
+        initialValue: contentMarkdown
+      });
+    </script>
 </main>
 </body>
 </html>
