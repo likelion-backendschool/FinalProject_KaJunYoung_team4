@@ -36,7 +36,9 @@ public class PostService {
 
         postRepository.save(newPost);
 
-        hashTagService.applyHashTags(newPost, createPostDto.getHashTagContents());
+        if (createPostDto.getHashTagContents() != null) {
+            hashTagService.applyHashTags(newPost, createPostDto.getHashTagContents());
+        }
 
         return newPost;
     }

@@ -29,7 +29,12 @@
         <label class="label">
           <span class="label-text">해시태그</span>
         </label>
-        <th:block th:utext="${post.extra_hashTagLinks}"/>
+        <div class="my-2">
+          <div th:each="hashTag : ${post.hashTags}" class="badge badge-lg badge-accent mx-1">
+            <span>#</span>
+            <span th:text="${hashTag.keyword.content}"></span>
+          </div>
+        </div>
       </div>
 
       <div class="form-control">

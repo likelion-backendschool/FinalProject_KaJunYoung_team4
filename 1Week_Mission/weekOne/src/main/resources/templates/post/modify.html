@@ -31,8 +31,7 @@
           <label class="label">
             <span class="label-text">해시태그</span>
           </label>
-          <input autofocus type="text" th:value="${post.getExtra_inputValue_hashTagContents()}" name="hashTagContents" id="hashTagContents" placeholder="#태그1 #태그2" class="input input-bordered" maxlength="50">
-          <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}">subject Error</small>
+          <input autofocus type="text" th:value="${post.getHashTagString()}" name="hashTagContents" id="hashTagContents" placeholder="#태그1 #태그2" class="input input-bordered" maxlength="50">
         </div>
 
         <div class="form-control">
