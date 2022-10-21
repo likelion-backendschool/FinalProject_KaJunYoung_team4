@@ -101,7 +101,7 @@ public class MemberController {
             return "member/modifyPassword";
         }
 
-        memberService.changePassword(authMember.getUsername(), modifyPasswordDto.getNewPassword());
+        memberService.changeBasicInfo(authMember.getUsername(), modifyPasswordDto.getNewPassword());
         redirectAttributes.addFlashAttribute("resultSuccess", "비밀번호가 변경되었습니다.");
 
         return "redirect:/member/modifyPassword";

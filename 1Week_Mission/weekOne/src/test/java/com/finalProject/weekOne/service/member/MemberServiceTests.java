@@ -73,7 +73,7 @@ class MemberServiceTests {
         assertThat(passwordEncoder.matches(rawPassword, foundMember.getPassword())).isTrue();
 
         // when
-        memberService.changePassword(foundMember.getUsername(), changePassword);
+        memberService.changeBasicInfo(foundMember.getUsername(), changePassword);
 
         // then
         assertThat(passwordEncoder.matches(changePassword, foundMember.getPassword())).isTrue();

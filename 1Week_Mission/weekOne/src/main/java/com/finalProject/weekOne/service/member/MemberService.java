@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -81,7 +80,7 @@ public class MemberService {
      * @param password 변경할 비밀번호
      */
     @Transactional
-    public void changePassword(String username, String password) {
+    public void changeBasicInfo(String username, String password) {
         Member currentMember = findByUsername(username);
         currentMember.changePassword(passwordEncoder.encode(password));
     }
@@ -103,7 +102,7 @@ public class MemberService {
             return;
         }
         String tempPassword = getRandomPassword();
-        changePassword(findPwdDto.getUsername(), tempPassword);
+        changeBasicInfo(findPwdDto.getUsername(), tempPassword);
         MailDto mailDto = MailDto.builder()
                 .title("[MUTBOOK] 비밀번호 찾기")
                 .message(tempPassword)
