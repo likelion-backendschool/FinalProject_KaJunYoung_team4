@@ -116,7 +116,15 @@ public class MemberController {
 
     @PostMapping("/findUsername")
     @PreAuthorize("isAnonymous()")
-    public String doFindMemberByEmail(String email, RedirectAttributes redirectAttributes) {
+    public String doFindMemberByEmail(String email, RedirectAttributes redirectAttributes, Model model) {
+        if (email == null || email.length() == 0) {
+            model.addAttribute("emailLengthError", "이메일을 입력해주세요.");
+            return "member/findUsername";
+        }
+        if (!memberService.existMemberEmail(email)) {
+            model.addAttribute("emailError", "존재하지 않는 이메일입니다.");
+            return "member/findUsername";
+        }
         Member currentMember = memberService.findByEmail(email);
         redirectAttributes.addFlashAttribute("result", currentMember.getUsername());
         return "redirect:/member/findUsername";
