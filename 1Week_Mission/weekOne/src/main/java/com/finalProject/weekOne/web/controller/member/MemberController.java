@@ -49,6 +49,16 @@ public class MemberController {
             model.addAttribute("signUpDto", signUpDto);
             return "member/signup";
         }
+        if (memberService.existByUsername(signUpDto.getUsername())) {
+            model.addAttribute("signUpDto", signUpDto);
+            model.addAttribute("usernameError", "이미 존재하는 아이디입니다.");
+            return "member/signup";
+        }
+        if (memberService.existMemberEmail(signUpDto.getEmail())) {
+            model.addAttribute("signUpDto", signUpDto);
+            model.addAttribute("emailError", "이미 존재하는 이메일입니다.");
+            return "member/signup";
+        }
         memberService.join(signUpDto);
         return "redirect:/member/login";
     }

@@ -123,6 +123,22 @@ public class MemberService {
     }
 
     /**
+     * 이메일이 일치하는 Member 객체가 있는지 조회
+     * @param email 회원가입 시 입력한 Email
+     */
+    public boolean existMemberEmail(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    /**
+     * 이메일이 일치하는 Member 객체가 있는지 조회
+     * @param username 회원가입 시 입력한 로그인 아이디
+     */
+    public boolean existByUsername(String username) {
+        return memberRepository.existsByUsername(username);
+    }
+
+    /**
      * 랜덤 비밀번호를 UUID를 통해 15자리 String을 생성
      */
     public String getRandomPassword() {
