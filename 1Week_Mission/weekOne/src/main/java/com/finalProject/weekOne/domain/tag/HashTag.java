@@ -4,7 +4,11 @@ import com.finalProject.weekOne.domain.base.BaseEntity;
 import com.finalProject.weekOne.domain.keyword.Keyword;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.post.Post;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
