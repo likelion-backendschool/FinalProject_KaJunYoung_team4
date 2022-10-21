@@ -32,7 +32,6 @@ public class ProductService {
                 .subject(createProductDto.getSubject())
                 .price(createProductDto.getPrice())
                 .author(member)
-                .createDate(LocalDateTime.now())
                 .build();
 
         productRepository.save(newProduct);

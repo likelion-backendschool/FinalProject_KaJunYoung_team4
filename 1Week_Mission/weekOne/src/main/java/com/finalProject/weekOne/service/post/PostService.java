@@ -32,7 +32,6 @@ public class PostService {
                 .subject(createPostDto.getSubject())
                 .content(createPostDto.getContent())
                 .contentHtml(Ut.html.markdown(createPostDto.getContent()))
-                .createDate(LocalDateTime.now())
                 .author(member)
                 .build();
 

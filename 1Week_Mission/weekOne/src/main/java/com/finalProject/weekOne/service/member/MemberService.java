@@ -42,7 +42,6 @@ public class MemberService {
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
                 .email(signUpDto.getEmail())
-                .createDate(LocalDateTime.now())
                 .authLevel(3)
                 .build();
 
