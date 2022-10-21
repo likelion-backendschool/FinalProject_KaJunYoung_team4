@@ -100,9 +100,11 @@ class MemberServiceTests {
         Member foundMember = memberService.findByUsername("testUser");
         String username = "testUser";
         String email = "kawnsdud@gmail.com";
-        FindPwdDto dto = new FindPwdDto();
-        dto.setUsername(username);
-        dto.setEmail(email);
+
+        FindPwdDto dto = FindPwdDto.builder()
+                .username(username)
+                .email(email)
+                .build();
 
         // when
         memberService.sendFindPasswordMail(dto);
