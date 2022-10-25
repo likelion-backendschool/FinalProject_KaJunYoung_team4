@@ -39,4 +39,8 @@ public class CartItemService {
     public List<CartItem> findAllByBuyer(Member buyer) {
         return cartItemRepository.findAllByBuyerId(buyer.getId());
     }
+
+    public void removeItem(Long memberId, Long productId) {
+        cartItemRepository.deleteByBuyerIdAndProductId(memberId, productId);
+    }
 }

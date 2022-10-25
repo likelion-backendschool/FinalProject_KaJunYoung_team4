@@ -64,4 +64,17 @@ class CartItemServiceTests {
         assertThat(cartItemService.findAllByBuyer(currentMember).size()).isEqualTo(1);
 //        assertThat(currentCartItem.getProducts().size()).isEqualTo(1);
     }
+
+    @Test
+    void removeCartItem() {
+        // given
+        Member currentMember = memberService.findByUsername("ciTester");
+        Product currentProduct = productService.findByProductId(1L);
+
+        // when
+        cartItemService.removeItem(currentMember.getId(), currentProduct.getId());
+
+        // then
+        assertThat(cartItemService.findAllByBuyer(currentMember).size()).isEqualTo(0);
+    }
 }
