@@ -48,4 +48,18 @@ public class CartItemController {
         model.addAttribute("items", memberItems);
         return "cart/list";
     }
+
+    @PostMapping("/remove/{productId}")
+    @PreAuthorize("isAuthenticated()")
+    public String doRemoveCartItem(@PathVariable Long productId,
+                                RedirectAttributes redirectAttributes,
+                                @AuthenticationPrincipal AuthMember authMember) {
+        log.info("productId={}", productId);
+        log.info("authMember.getMember().getId()={}", authMember.getMember().getId());
+        cartItemService.removeItem(authMember.getMember().getId(), productId);
+
+        redirectAttributes.addFlashAttribute("result", "%s 상품을 삭제했습니다.".formatted(productService.findByProductId(productId).getSubject()));
+
+        return "redirect:/cart/list";
+    }
 }

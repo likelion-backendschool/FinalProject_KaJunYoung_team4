@@ -39,12 +39,20 @@
               <td class="py-4 px-6" th:onClick="|location.href='/product/${item.getProduct().getId()}'|"
                   th:text="${item.getProduct().price}">PRICE</td>
               <td class="py-4 px-6">
-                <a class="btn btn-primary" href="javascript: document.intoCart.submit();" >삭제</a>
-                <form name="intoCart" th:action="|@{/cart/remove/{productId} (productId = ${item.getProduct().id})}|" method="post" hidden></form>
+                <a class="btn btn-primary" th:href="|javascript: document.deleteCart${item.getProduct().id}.submit()|" >삭제</a>
+                <form th:name="|deleteCart${item.getProduct().id}|" th:action="|@{/cart/remove/{productId} (productId = ${item.getProduct().id})}|" method="post" hidden></form>
               </td>
             </tr>
             </tbody>
           </table>
+          <th:block th:if="${result}">
+            <script th:inline="javascript">
+              const productResult = /*[[ ${result} ]]*/ null;
+
+              console.log(productResult);
+              successModal(productResult);
+            </script>
+          </th:block>
         </div>
       </div>
 

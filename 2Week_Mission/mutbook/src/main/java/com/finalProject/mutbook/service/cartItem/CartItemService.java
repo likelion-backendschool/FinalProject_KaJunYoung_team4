@@ -36,11 +36,18 @@ public class CartItemService {
         return cartItem;
     }
 
+
+    @Transactional
+    public void removeItem(Long buyerId, Long productId) {
+        CartItem currentItem = cartItemRepository.findByBuyerIdAndProductId(buyerId, productId).orElse(null);
+        if (currentItem != null) {
+            cartItemRepository.delete(currentItem);
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<CartItem> findAllByBuyer(Member buyer) {
         return cartItemRepository.findAllByBuyerId(buyer.getId());
     }
 
-    public void removeItem(Long memberId, Long productId) {
-        cartItemRepository.deleteByBuyerIdAndProductId(memberId, productId);
-    }
 }
