@@ -18,6 +18,10 @@ public class CartItemService {
 
     private final CartItemRepository cartItemRepository;
 
+    /** 장바구니에 Product 추가하는 메소드
+     * @param buyer 현재 로그인된 Member
+     * @param product 선택된 상품
+     */
     @Transactional
     public CartItem addItem(Member buyer, Product product) {
         CartItem oldCartItem = cartItemRepository.findByBuyerIdAndProductId(buyer.getId(), product.getId()).orElse(null);
@@ -36,7 +40,10 @@ public class CartItemService {
         return cartItem;
     }
 
-
+    /** 장바구니에 Product 삭제하는 메소드
+     * @param buyerId 현재 로그인된 memberId
+     * @param productId 선택된 상품의 productId
+     */
     @Transactional
     public void removeItem(Long buyerId, Long productId) {
         CartItem currentItem = cartItemRepository.findByBuyerIdAndProductId(buyerId, productId).orElse(null);
@@ -45,6 +52,9 @@ public class CartItemService {
         }
     }
 
+    /** 로그인된 Member 장바구니를 보여주는 메소드
+     * @param buyer 현재 로그인된 Member
+     */
     @Transactional(readOnly = true)
     public List<CartItem> findAllByBuyer(Member buyer) {
         return cartItemRepository.findAllByBuyerId(buyer.getId());
