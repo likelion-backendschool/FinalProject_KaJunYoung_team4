@@ -7,6 +7,7 @@ import com.finalProject.mutbook.domain.order.OrderItem;
 import com.finalProject.mutbook.domain.order.OrderRepository;
 import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.service.cartItem.CartItemService;
+import com.finalProject.mutbook.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 public class OrderService {
 
     private final CartItemService cartItemService;
+    private final MemberService memberService;
     private final OrderRepository orderRepository;
 
     @Transactional

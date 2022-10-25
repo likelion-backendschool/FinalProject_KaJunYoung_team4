@@ -13,9 +13,19 @@
 
 <body>
   <main layout:fragment="main">
-    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+    <script src="https://js.tosspayments.com/v1"></script>
+    <script th:inline="javascript">
+      const orderId = /*[[ ${order.id} ]]*/ null;
+      const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
+      const orderName = /*[[ ${order.name} ]]*/ null;
+      const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
+      console.log(orderPayPrice);
+    </script>
+    <form hidden name="payByRestCashOnlyForm" method="POST" th:action="@{|/order/${order.id}/pay|}">
 
-    <div class="max-w-md w-full px-2 pt-4">
+    </form>
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+      <div class="max-w-md w-full px-2 pt-4">
       <h1 class="font-bold text-lg">주문 상세내역</h1>
 
       <div class="form-control">
@@ -26,7 +36,8 @@
         <label class="label">
           <span class="label-text">주문 가격</span>
         </label>
-        <input type="text" th:value="${#numbers.formatInteger(order.calculatePayPrice, 3, 'COMMA') + '원'}" class="input input-bordered" readonly>
+        <input type="text"
+               th:value="${#numbers.formatInteger(order.calculatePayPrice, 3, 'COMMA') + '원'}" class="input input-bordered" readonly>
         <label class="label">
           <span class="label-text">주문 날짜</span>
         </label>
@@ -39,7 +50,7 @@
         </label>
         <div class="my-2">
           <div th:each="item : ${order.getOrderItems()}" class="badge badge-lg badge-accent m-1">
-            <a th:href="|@{/product/${item.getProduct().id}}|">
+            <a th:href="|@{/product/{productId}(productId = ${item.getProduct().id})}|">
               <span th:text="${item.getProduct().subject}"></span>
               <span th:text="${#numbers.formatInteger(item.getProduct().price, 3, 'COMMA') + '원'}"></span>
             </a>
@@ -47,83 +58,28 @@
         </div>
       </div>
       <div class="grid grid-cols-2 mt-2 gap-4">
-        <a class="btn btn-primary" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>
+        <button class="btn btn-primary" onclick="payment();">주문하기</button>
+        <!--<a class="btn btn-primary" onclick="payment();" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>-->
         <a class="btn btn-primary" th:href="|@{/order/{orderId}/cancel (orderId = ${order.id})}|">주문취소</a>
       </div>
     </div>
-
-  </section>
-    <!--<script>
-      const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
-      const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
-      const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
-
-      const tossPayments = TossPayments("test_ck_GKNbdOvk5rkGKpz99kErn07xlzmj");
+    </section>
+    <script>
+      var clientKey = 'test_ck_GKNbdOvk5rkGKpz99kErn07xlzmj'
+      var tossPayments = TossPayments(clientKey)
 
       function payment() {
-        let useRestCash = parseInt($PaymentForm__useRestCash.val());
-
-        if (orderPayPrice == useRestCash) {
-          document.payByRestCashOnlyForm.submit();
-          return;
-        }
-
-        const method = "카드"; // "카드" 혹은 "가상계좌"
-
-        const paymentData = {
-          amount: orderPayPrice - useRestCash,
+        tossPayments.requestPayment('카드', { // 결제 수단 파라미터
+          // 결제 정보 파라미터
+          amount: orderPayPrice,
           orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
-          orderName,
+          orderName: orderName,
           customerName: buyerName,
           successUrl: window.location.origin + "/order/" + orderId + "/success",
           failUrl: window.location.origin + "/order/" + orderId + "/fail"
-        };
-
-        tossPayments.requestPayment(method, paymentData);
+        })
       }
     </script>
-
-    <script>
-      function PaymentForm__useRestCashFix() {
-        let useRestCash = parseInt($PaymentForm__useRestCash.val());
-
-        if (isNaN(useRestCash)) {
-          useRestCash = 0;
-        }
-
-        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
-
-        if (useRestCash > maxUseRestCash) {
-          useRestCash = maxUseRestCash;
-          $PaymentForm__useRestCash.val(maxUseRestCash);
-        }
-
-        if ( useRestCash == maxUseRestCash ) {
-          $PaymentForm__useRestCashAll.prop('checked', true);
-        }
-        else {
-          $PaymentForm__useRestCashAll.prop('checked', false);
-        }
-
-        const pgPayPrice = orderPayPrice - useRestCash;
-
-        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
-      }
-
-      function PaymentForm__useRestCashAllChanged() {
-        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
-          const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
-          $PaymentForm__useRestCash.val(maxUseRestCash);
-        }
-        else {
-          $PaymentForm__useRestCash.val(0);
-        }
-
-        PaymentForm__useRestCashFix();
-      }
-
-      PaymentForm__useRestCashFix();
-    </script>-->
 </main>
 </body>
 </html>
