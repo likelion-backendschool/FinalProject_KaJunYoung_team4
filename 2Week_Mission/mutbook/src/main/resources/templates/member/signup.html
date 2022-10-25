@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html  class="no-js"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+       layout:decorate="~{layout/layout.html}">
+
+<head>
+    <title>회원가입</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <section class="section section-join flex-grow flex flex-col items-center justify-center">
+
+        <div class="max-w-md w-full px-2 pt-4">
+            <h1 class="font-bold text-lg">회원가입</h1>
+
+            <form th:action method="POST" class="flex flex-col gap-3" th:object="${signUpDto}">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">아이디</span>
+                    </label>
+                    <input autofocus type="text" th:field="*{username}" placeholder="아이디" class="input input-bordered"
+                           maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</small>
+                    <span th:if="${usernameError}" th:text="${usernameError}" class="text-red-500 mt-2"></span>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">필명</span>
+                    </label>
+                    <input autofocus type="text" th:field="*{nickname}" placeholder="필명" class="input input-bordered"
+                           maxlength="50">
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">비밀번호</span>
+                    </label>
+                    <input type="password" th:field="*{password}"
+                           placeholder="비밀번호" class="input input-bordered" maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</small>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">비밀번호 확인</span>
+                    </label>
+                    <input type="password" name="passwordChk" id="passwordChk"
+                           placeholder="비밀번호를 한번 더 입력해주세요." class="input input-bordered" maxlength="50">
+                    <span id="passwordChkMsg"></span>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">이메일</span>
+                    </label>
+                    <input type="email" th:field="*{email}" placeholder="이메일" class="input input-bordered" maxlength="50">
+                    <small class="form-text text-red-500 fieldError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</small>
+                    <span th:if="${emailError}" th:text="${emailError}" class="text-red-500 mt-2"></span>
+                </div>
+
+                <div class="grid grid-cols-2 mt-2 gap-2">
+                    <input class="btn btn-primary" type="button" id="signup" value="회원가입">
+                    <a href="/member/login" class="btn btn-secondary btn-outline">로그인</a>
+                </div>
+            </form>
+        </div>
+
+    </section>
+
+    <script>
+        let pwdChk = false;
+        $("#signup").click(function(){
+            if (pwdChk) {
+                $('#signupForm').submit();
+            } else if (!pwdChk) {
+                warningModal("비밀번호를 확인해주세요.");
+            }
+        });
+        $(function(){
+            $('#password').on("propertychange change keyup paste input", function(){
+                $('#passwordChkMsg').html('');
+            });
+
+            $('#password, #passwordChk').keyup(function(){
+
+                if($('#password').val() !== $('#passwordChk').val()){
+                    pwdChk = false;
+                    $("#passwordChkMsg").text("비밀번호가 일치하지 않습니다.")
+                        .addClass("text-red-500")
+                        .removeClass("text-blue-500");
+                } else{
+                    pwdChk = true;
+                    $("#passwordChkMsg").text("비밀번호가 일치합니다.")
+                        .addClass("text-blue-500")
+                        .removeClass("text-red-500");
+                }
+
+            });
+        });
+        $('#passwordChk, #password, #username, #email').on("propertychange change keyup paste input", function(){
+            if (pwdChk) {
+                $("#signup").attr("type", "submit");
+            } else {
+                $("#signup").attr("type", "button");
+            }
+        });
+
+    </script>
+
+</main>
+</body>
+</html>

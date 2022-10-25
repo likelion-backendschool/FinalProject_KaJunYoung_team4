@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>로그인</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+  <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-md w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">로그인</h1>
+
+      <form th:action method="POST" class="flex flex-col gap-3">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">아이디</span>
+          </label>
+          <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered" maxlength="50">
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">비밀번호</span>
+          </label>
+          <input type="password" name="password"
+                 placeholder="비밀번호" class="input input-bordered" maxlength="50">
+        </div>
+
+        <div class="grid grid-cols-2 mt-2 gap-2">
+          <input class="btn btn-primary" type="submit" value="로그인">
+          <a href="/member/signUp" class="btn btn-secondary btn-outline">가입하기</a>
+        </div>
+      </form>
+    </div>
+    <div class="text-center mt-3">
+      <a href="/member/findUsername">아이디 찾기</a>
+      <span class="mx-2">|</span>
+      <a href="/member/findPassword">비밀번호 찾기</a>
+    </div>
+
+  </section>
+
+</main>
+</body>
+</html>
