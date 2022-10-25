@@ -1,4 +1,4 @@
-package com.finalProject.weekOne.service.member;
+package com.finalProject.mutbook.service.member;
 
 import com.finalProject.mutbook.domain.member.Member;
 import com.finalProject.mutbook.service.member.MemberService;
