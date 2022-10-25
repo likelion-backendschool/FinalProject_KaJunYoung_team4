@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>주문 상세</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-md w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">주문 상세내역</h1>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">주문 번호</span>
+        </label>
+        <input type="text" th:value="${order.id}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">주문 가격</span>
+        </label>
+        <input type="text" th:value="${#numbers.formatInteger(order.calculatePayPrice, 3, 'COMMA') + '원'}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">주문 날짜</span>
+        </label>
+        <input type="text" th:value="${#temporals.format(order.createDate, 'yyyy-MM-dd')}" class="input input-bordered" readonly>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">상품 상세</span>
+        </label>
+        <div class="my-2">
+          <div th:each="item : ${order.getOrderItems()}" class="badge badge-lg badge-accent m-1">
+            <a th:href="|@{/product/${item.getProduct().id}}|">
+              <span th:text="${item.getProduct().subject}"></span>
+              <span th:text="${#numbers.formatInteger(item.getProduct().price, 3, 'COMMA') + '원'}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 mt-2 gap-4">
+        <a class="btn btn-primary" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>
+        <a class="btn btn-primary" th:href="|@{/order/{orderId}/cancel (orderId = ${order.id})}|">주문취소</a>
+      </div>
+    </div>
+
+  </section>
+    <!--<script>
+      const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+      const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+      const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
+
+      const tossPayments = TossPayments("test_ck_GKNbdOvk5rkGKpz99kErn07xlzmj");
+
+      function payment() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (orderPayPrice == useRestCash) {
+          document.payByRestCashOnlyForm.submit();
+          return;
+        }
+
+        const method = "카드"; // "카드" 혹은 "가상계좌"
+
+        const paymentData = {
+          amount: orderPayPrice - useRestCash,
+          orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
+          orderName,
+          customerName: buyerName,
+          successUrl: window.location.origin + "/order/" + orderId + "/success",
+          failUrl: window.location.origin + "/order/" + orderId + "/fail"
+        };
+
+        tossPayments.requestPayment(method, paymentData);
+      }
+    </script>
+
+    <script>
+      function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+          useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        if (useRestCash > maxUseRestCash) {
+          useRestCash = maxUseRestCash;
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        if ( useRestCash == maxUseRestCash ) {
+          $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+        else {
+          $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+        const pgPayPrice = orderPayPrice - useRestCash;
+
+        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
+      }
+
+      function PaymentForm__useRestCashAllChanged() {
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+          const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+          $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+      }
+
+      PaymentForm__useRestCashFix();
+    </script>-->
+</main>
+</body>
+</html>

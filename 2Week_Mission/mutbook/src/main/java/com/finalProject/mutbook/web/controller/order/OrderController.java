@@ -6,9 +6,12 @@ import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,24 @@ public class OrderController {
         redirectAttributes.addAttribute("id", newOrder.getId());
 
         return "redirect:/order/{id}";
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String showOrderDetail(@PathVariable Long id, Model model,
+                                  RedirectAttributes redirectAttributes,
+                                  @AuthenticationPrincipal AuthMember authMember) {
+
+        Order newOrder = orderService.findByOrderId(id);
+
+        if (newOrder == null) {
+            redirectAttributes.addFlashAttribute("result", "잘못된 주문 번호입니다.");
+            return "redirect:/order/list";
+        }
+
+        model.addAttribute("order", newOrder);
+
+        return "order/detail";
     }
 
 }

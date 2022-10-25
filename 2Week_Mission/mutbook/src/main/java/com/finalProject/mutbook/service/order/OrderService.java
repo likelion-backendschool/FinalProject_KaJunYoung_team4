@@ -60,4 +60,8 @@ public class OrderService {
     public List<Order> findAllByBuyer(Long buyerId) {
         return orderRepository.findAllByBuyerId(buyerId);
     }
+
+    public Order findByOrderId(Long orderId) {
+        return orderRepository.findById(orderId).orElse(null);
+    }
 }
