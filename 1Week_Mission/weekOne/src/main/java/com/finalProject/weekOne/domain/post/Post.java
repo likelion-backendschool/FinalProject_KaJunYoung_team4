@@ -6,9 +6,12 @@ import com.finalProject.weekOne.domain.tag.HashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +32,9 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     private Member author;
 
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL})
+    private List<HashTag> hashTags = new ArrayList<>();
+
     public Post(long id) {
         super(id);
     }
@@ -39,52 +45,18 @@ public class Post extends BaseEntity {
         this.contentHtml = contentHtml;
     }
 
-    public String getExtra_inputValue_hashTagContents() {
-        Map<String, Object> extra = getExtra();
-
-        if (extra.containsKey("hashTags") == false) {
+    // 해당 게시글의 해시태그들을 한 문장으로 반환
+    public String getHashTagString() {
+        if(hashTags.isEmpty()) {
             return "";
         }
 
-        List<HashTag> hashTags = (List<HashTag>) extra.get("hashTags");
-
-        if (hashTags.isEmpty()) {
-            return "";
-        }
-
-        return hashTags
+        return "#" + hashTags
                 .stream()
-                .map(hashTag -> "#" + hashTag.getKeyword().getContent())
+                .map(hashTag -> hashTag.getKeyword().getContent())
                 .sorted()
-                .collect(Collectors.joining(" "));
-    }
-
-    public String getExtra_hashTagLinks() {
-        Map<String, Object> extra = getExtra();
-
-        if (!extra.containsKey("hashTags")) {
-            return "";
-        }
-
-        List<HashTag> hashTags = (List<HashTag>) extra.get("hashTags");
-
-        if (hashTags.isEmpty()) {
-            return "";
-        }
-
-        return hashTags
-                .stream()
-                .map(hashTag -> {
-                    String text = "#" + hashTag.getKeyword().getContent();
-
-                    return """
-                            <a href="%s" target="_blank">%s</a>
-                            """
-                            .stripIndent()
-                            .formatted(hashTag.getKeyword().getListUrl(), text);
-                })
-                .sorted()
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" #"))
+                .trim();
     }
 
 }

@@ -75,9 +75,12 @@ public class MemberController {
 
     @PostMapping("/modify")
     @PreAuthorize("isAuthenticated()")
-    public String doModifyBasicInfo(ModifyBaseInfoDto modifyBaseInfoDto, Model model, @AuthenticationPrincipal AuthMember authMember) {
+    public String doModifyBasicInfo(ModifyBaseInfoDto modifyBaseInfoDto, Model model,
+                                    @AuthenticationPrincipal AuthMember authMember,
+                                    RedirectAttributes redirectAttributes) {
 
         memberService.changeBasicInfo(authMember.getUsername(), modifyBaseInfoDto);
+        redirectAttributes.addFlashAttribute("resultSuccess", "계정 정보가 변경되었습니다.");
 
         return "redirect:/member/modify";
     }

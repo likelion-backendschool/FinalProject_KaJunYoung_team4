@@ -1,5 +1,6 @@
 package com.finalProject.weekOne.service.member;
 
+import com.finalProject.weekOne.domain.member.AuthMember;
 import com.finalProject.weekOne.domain.member.Member;
 import com.finalProject.weekOne.domain.member.MemberRepository;
 import com.finalProject.weekOne.web.dto.member.FindPwdDto;
@@ -12,10 +13,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -72,6 +78,7 @@ public class MemberService {
     public void changeBasicInfo(String username, ModifyBaseInfoDto modifyBaseInfoDto) {
         Member currentMember = findByUsername(username);
         currentMember.changeBasicInfo(modifyBaseInfoDto.getNickname(), modifyBaseInfoDto.getEmail());
+        forceAuthentication(currentMember);
     }
 
     /**
@@ -83,6 +90,7 @@ public class MemberService {
     public void changeBasicInfo(String username, String password) {
         Member currentMember = findByUsername(username);
         currentMember.changePassword(passwordEncoder.encode(password));
+        forceAuthentication(currentMember);
     }
 
     /**
@@ -172,5 +180,25 @@ public class MemberService {
             return passwordEncoder.matches(oldPassword, currentMember.getPassword());
         }
         return false;
+    }
+
+    public void forceAuthentication (Member member) {
+        String memberRole = "";
+        if (member.getAuthLevel() == 3) {
+            memberRole = "MEMBER";
+        } else {
+            memberRole = "ADMIN";
+        }
+        AuthMember authMember = new AuthMember(member, Collections.singletonList(new SimpleGrantedAuthority(memberRole)));
+
+        UsernamePasswordAuthenticationToken authentication =
+                UsernamePasswordAuthenticationToken.authenticated(
+                        authMember,
+                        null,
+                        authMember.getAuthorities()
+                );
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
     }
 }
