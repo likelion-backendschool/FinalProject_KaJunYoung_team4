@@ -45,6 +45,10 @@
             </tr>
             </tbody>
           </table>
+          <div class="grid grid-cols-1 mt-2">
+            <a class="btn btn-primary" href="javascript: document.createOrder.submit();" >구매하기</a>
+            <form name="createOrder" th:action="|@{/order/create}|" method="post" hidden></form>
+          </div>
           <th:block th:if="${result}">
             <script th:inline="javascript">
               const productResult = /*[[ ${result} ]]*/ null;

@@ -31,6 +31,8 @@ public class OrderService {
         for (CartItem cartItem : cartItems) {
             Product currentProduct = cartItem.getProduct();
             orderItems.add(new OrderItem(currentProduct));
+
+            cartItemService.removeItem(currentMember.getId(), currentProduct.getId());
         }
 
         return create(currentMember, orderItems);
