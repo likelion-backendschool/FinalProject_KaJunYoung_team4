@@ -41,7 +41,7 @@ public class MemberService {
      * 새로운 회원을 저장하는 메소드
      * @param signUpDto 회원가입 시 입력된 정보를 담고 있음
      */
-    public void join(SignUpDto signUpDto) {
+    public Member join(SignUpDto signUpDto) {
         Member newMember = Member.builder()
                 .username(signUpDto.getUsername())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
@@ -57,7 +57,7 @@ public class MemberService {
                 .build();
         sendMail(mailDto);
 
-        memberRepository.save(newMember);
+        return memberRepository.save(newMember);
     }
 
     /**
