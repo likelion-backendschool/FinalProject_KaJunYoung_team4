@@ -27,4 +27,13 @@ public class MyBookService {
             myBookRepository.save(myBook);
         }
     }
+
+    public void deleteBook(Order order) {
+        List<MyBook> myBooks = findAllByOrderId(order.getId());
+        myBookRepository.deleteAll(myBooks);
+    }
+
+    public List<MyBook> findAllByOrderId(long orderId) {
+        return myBookRepository.findAllByOrderId(orderId);
+    }
 }

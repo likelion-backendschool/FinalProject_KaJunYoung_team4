@@ -66,6 +66,21 @@ public class OrderService {
     }
 
     @Transactional
+    public void refundOrder(Order order) {
+        Member buyer = order.getBuyer();
+        int payPrice = order.calculatePayPrice();
+
+
+        // PAYPrice를 restCash로 반환
+        memberService.refundCash(buyer, payPrice, "주문__%d__환불__토스페이먼츠".formatted(order.getId()));
+
+
+        order.setPaymentRefund();
+        orderRepository.save(order);
+        myBookService.deleteBook(order);
+    }
+
+    @Transactional
     public void payByTossPayments(Order order, long useRestCash) {
         Member buyer = order.getBuyer();
         int payPrice = order.calculatePayPrice();

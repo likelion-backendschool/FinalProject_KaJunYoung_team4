@@ -209,6 +209,21 @@ public class MemberService {
         );
     }
 
+    /**
+     * 환불 CashLog를 기록하기 위한 메소드
+     * @param member 현재 유저의 로그인 아이디
+     * @param price 결제한 금액
+     * @param eventType 결제 방식
+     */
+    @Transactional
+    public void refundCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+    }
+
     public void forceAuthentication (Member member) {
         String memberRole = "";
         if (member.getAuthLevel() == 3) {

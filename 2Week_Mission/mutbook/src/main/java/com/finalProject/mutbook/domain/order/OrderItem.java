@@ -56,4 +56,11 @@ public class OrderItem extends BaseEntity {
         this.payDate = LocalDateTime.now();
     }
 
+    public void setPaymentRefund() {
+        this.pgFee = 0;
+        this.payPrice = 0;
+        this.isPaid = false;
+        this.payDate = LocalDateTime.now();
+    }
+
 }

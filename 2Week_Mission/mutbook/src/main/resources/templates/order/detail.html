@@ -21,12 +21,6 @@
       const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
       console.log(orderPayPrice);
     </script>
-    <form hidden name="payByRestCashOnlyForm" method="POST" th:action="@{|/order/${order.id}/pay|}">
-
-    </form>
-    <form hidden name="cancelOrder" method="POST" th:action="@{|/order/${order.id}/cancel|}">
-
-    </form>
     <section class="section section-login flex-grow flex flex-col items-center justify-center">
       <div class="max-w-md w-full px-2 pt-4">
       <h1 class="font-bold text-lg">주문 상세내역</h1>
@@ -61,12 +55,21 @@
         </div>
       </div>
       <div class="grid grid-cols-1 mt-2" th:if="${order.isPaid()}">
-        <a class="btn btn-primary" th:href="|@{/order/{orderId}/refund (orderId = ${order.id})}|">환불하기</a>
+        <a onclick="return confirm('정말로 환불하시겠습니까?')" class="btn btn-primary" href="javascript: document.refundOrder.submit();">환불하기</a>
+        <form hidden name="refundOrder" method="POST" th:action="@{|/order/${order.id}/refund|}">
+
+        </form>
       </div>
         <div class="grid grid-cols-2 mt-2 gap-4" th:if="${!order.isPaid()}">
           <button class="btn btn-primary" onclick="payment();">주문하기</button>
           <!--<a class="btn btn-primary" onclick="payment();" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>-->
           <a onclick="return confirm('정말로 취소하시겠습니까?')" class="btn btn-primary" href="javascript: document.cancelOrder.submit();">주문삭제</a>
+          <form hidden name="payByRestCashOnlyForm" method="POST" th:action="@{|/order/${order.id}/pay|}">
+
+          </form>
+          <form hidden name="cancelOrder" method="POST" th:action="@{|/order/${order.id}/cancel|}">
+
+          </form>
         </div>
     </div>
     </section>

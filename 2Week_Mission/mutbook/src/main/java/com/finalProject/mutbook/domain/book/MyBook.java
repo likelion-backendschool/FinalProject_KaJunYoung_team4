@@ -2,6 +2,7 @@ package com.finalProject.mutbook.domain.book;
 
 import com.finalProject.mutbook.domain.base.BaseEntity;
 import com.finalProject.mutbook.domain.member.Member;
+import com.finalProject.mutbook.domain.order.Order;
 import com.finalProject.mutbook.domain.product.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,10 @@ public class MyBook extends BaseEntity {
 
     @ManyToOne
     private Product product;
+
+    @ManyToOne
+    @ToString.Exclude
+    private Order order;
 
     public MyBook(long id) {
         super(id);
