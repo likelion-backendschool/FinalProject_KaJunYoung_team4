@@ -1,2 +1,4 @@
-package com.finalProject.mutbook.web.controller.order.exception;public class OrderIdNotMatchedException {
+package com.finalProject.mutbook.web.controller.order.exception;
+
+public class OrderIdNotMatchedException extends RuntimeException {
 }

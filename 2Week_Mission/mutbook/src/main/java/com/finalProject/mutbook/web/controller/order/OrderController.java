@@ -9,6 +9,8 @@ import com.finalProject.mutbook.domain.order.Order;
 import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.service.member.MemberService;
 import com.finalProject.mutbook.service.order.OrderService;
+import com.finalProject.mutbook.web.controller.order.exception.OrderIdNotMatchedException;
+import com.finalProject.mutbook.web.controller.order.exception.OrderNotEnoughRestCashException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,6 +87,62 @@ public class OrderController {
         model.addAttribute("order", newOrder);
 
         return "order/detail";
+    }
+
+    @RequestMapping("/{id}/success")
+    public String confirmPayment(@PathVariable long id, @RequestParam String paymentKey,
+                                 @RequestParam String orderId, @RequestParam Long amount, Model model,
+                                 @AuthenticationPrincipal AuthMember authMember) throws Exception {
+
+        Order order = orderService.findByOrderId(id);
+
+        long orderIdInputed = Long.parseLong(orderId.split("__")[1]);
+
+        if (id != orderIdInputed) {
+            throw new OrderIdNotMatchedException();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        // headers.setBasicAuth(SECRET_KEY, ""); // spring framework 5.2 이상 버전에서 지원
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes()));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> payloadMap = new HashMap<>();
+        payloadMap.put("orderId", orderId);
+        payloadMap.put("amount", String.valueOf(amount));
+
+        Member actor = authMember.getMember();
+        long restCash = memberService.getRestCash(actor);
+        long payPriceRestCash = order.calculatePayPrice() - amount;
+
+        if (payPriceRestCash > restCash) {
+            throw new OrderNotEnoughRestCashException();
+        }
+
+        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
+
+        ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
+                "https://api.tosspayments.com/v1/payments/" + paymentKey, request, JsonNode.class);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+            orderService.payByTossPayments(order, payPriceRestCash);
+
+            return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("결제가 완료되었습니다."));
+        } else {
+            JsonNode failNode = responseEntity.getBody();
+            model.addAttribute("message", failNode.get("message").asText());
+            model.addAttribute("code", failNode.get("code").asText());
+            return "order/fail";
+        }
+    }
+
+    @RequestMapping("/{id}/fail")
+    public String failPayment(@PathVariable long id, @RequestParam String message,
+                              @RequestParam String code, Model model) {
+        model.addAttribute("message", message);
+        model.addAttribute("code", code);
+        return "order/fail";
     }
 
 }

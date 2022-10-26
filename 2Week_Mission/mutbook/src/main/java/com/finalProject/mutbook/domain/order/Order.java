@@ -68,4 +68,12 @@ public class Order extends BaseEntity {
         return payPrice;
     }
 
+    public void setPaymentDone() {
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setPaymentDone();
+        }
+
+        isPaid = true;
+    }
+
 }

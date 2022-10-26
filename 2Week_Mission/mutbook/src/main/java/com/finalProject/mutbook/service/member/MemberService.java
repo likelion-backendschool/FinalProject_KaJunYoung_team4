@@ -1,12 +1,17 @@
 package com.finalProject.mutbook.service.member;
 
+import com.finalProject.mutbook.app.dto.RsData;
+import com.finalProject.mutbook.domain.cash.CashLog;
 import com.finalProject.mutbook.domain.member.AuthMember;
 import com.finalProject.mutbook.domain.member.Member;
 import com.finalProject.mutbook.domain.member.MemberRepository;
+import com.finalProject.mutbook.service.cash.CashService;
 import com.finalProject.mutbook.web.dto.member.FindPwdDto;
 import com.finalProject.mutbook.web.dto.member.MailDto;
 import com.finalProject.mutbook.web.dto.member.modify.ModifyBaseInfoDto;
 import com.finalProject.mutbook.web.dto.member.SignUpDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +36,9 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-
     private final JavaMailSender javaMailSender;
+
+    private final CashService cashService;
 
     @Value("${spring.mail.username}")
     private String FROM;
@@ -182,6 +188,27 @@ public class MemberService {
         return false;
     }
 
+    /**
+     * CashLog를 기록하기 위한 메소드
+     * @param member 현재 유저의 로그인 아이디
+     * @param price 결제한 금액
+     * @param eventType 결제 방식
+     */
+    @Transactional
+    public RsData<AddCashRsDataBody> addCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+
+        return RsData.of(
+                "S-1",
+                "성공",
+                new AddCashRsDataBody(cashLog, newRestCash)
+        );
+    }
+
     public void forceAuthentication (Member member) {
         String memberRole = "";
         if (member.getAuthLevel() == 3) {
@@ -200,5 +227,17 @@ public class MemberService {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
+    }
+    @Data
+    @AllArgsConstructor
+    public static class AddCashRsDataBody {
+        CashLog cashLog;
+        long newRestCash;
+    }
+
+    public long getRestCash(Member member) {
+        Member foundMember = findByUsername(member.getUsername());
+
+        return foundMember.getRestCash();
     }
 }

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -28,6 +29,9 @@ public class Member extends BaseEntity {
     private String email;
 
     private int authLevel;
+
+    @Setter
+    private long restCash;
 
     public Member(long id) {
         super(id);
