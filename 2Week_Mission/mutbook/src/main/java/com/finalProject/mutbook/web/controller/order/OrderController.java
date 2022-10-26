@@ -89,6 +89,24 @@ public class OrderController {
         return "order/detail";
     }
 
+    @PostMapping("/{id}/cancel")
+    @PreAuthorize("isAuthenticated()")
+    public String doOrderCancel(@PathVariable Long id, Model model,
+                                  RedirectAttributes redirectAttributes,
+                                  @AuthenticationPrincipal AuthMember authMember) {
+
+        Order findOrder = orderService.findByOrderId(id);
+
+        if (findOrder == null) {
+            redirectAttributes.addFlashAttribute("result", "잘못된 주문 번호입니다.");
+            return "redirect:/order/list";
+        }
+
+        orderService.cancelOrder(findOrder);
+
+        return "redirect:/order/list?msg=%s".formatted(Ut.url.encode("주문이 취소되었습니다."));
+    }
+
     @RequestMapping("/{id}/success")
     public String confirmPayment(@PathVariable long id, @RequestParam String paymentKey,
                                  @RequestParam String orderId, @RequestParam Long amount, Model model,

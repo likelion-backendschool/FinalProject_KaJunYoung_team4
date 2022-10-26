@@ -59,6 +59,10 @@ public class OrderService {
         return order;
     }
 
+    public void cancelOrder(Order order) {
+        orderRepository.delete(order);
+    }
+
     @Transactional
     public void payByTossPayments(Order order, long useRestCash) {
         Member buyer = order.getBuyer();
