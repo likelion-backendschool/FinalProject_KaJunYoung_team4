@@ -15,6 +15,7 @@
         <div class="max-w-md w-full px-2 pt-4">
             <h1 class="font-bold text-lg">내 정보 수정</h1>
             <small class="form-text text-green-500" th:if="${resultSuccess}" th:text="${resultSuccess}">변경 성공</small>
+            <small class="form-text text-red-500" th:if="${resultError}" th:text="${resultError}">변경 실패</small>
 
             <form th:action method="POST" class="flex flex-col gap-3">
                 <div class="form-control">

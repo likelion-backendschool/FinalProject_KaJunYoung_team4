@@ -79,6 +79,11 @@ public class MemberController {
                                     @AuthenticationPrincipal AuthMember authMember,
                                     RedirectAttributes redirectAttributes) {
 
+        if (memberService.existMemberEmail(modifyBaseInfoDto.getEmail())) {
+            redirectAttributes.addFlashAttribute("resultError", "이미 존재하는 이메일입니다.");
+            return "redirect:/member/modify";
+        }
+
         memberService.changeBasicInfo(authMember.getUsername(), modifyBaseInfoDto);
         redirectAttributes.addFlashAttribute("resultSuccess", "계정 정보가 변경되었습니다.");
 
