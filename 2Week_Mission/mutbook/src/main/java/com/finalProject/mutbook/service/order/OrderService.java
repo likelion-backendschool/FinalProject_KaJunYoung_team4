@@ -126,8 +126,8 @@ public class OrderService {
     public boolean isRefundable(Order findOrder) {
         List<OrderItem> items = findOrder.getOrderItems();
         for (OrderItem item : items) {
-            // 지금 시간보다 10분 이후면 불가능
-            if (item.getPayDate().plusMinutes(10).isBefore(LocalDateTime.now())) {
+            // 결제 후 10분 지나면 환불 불가능
+            if (item.getPayDate().isBefore(item.getPayDate().plusMinutes(10))) {
                 return true;
             }
         }
