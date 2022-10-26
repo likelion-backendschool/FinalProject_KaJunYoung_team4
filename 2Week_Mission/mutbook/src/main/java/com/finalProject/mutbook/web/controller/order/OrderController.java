@@ -139,7 +139,7 @@ public class OrderController {
             return "redirect:/order/list";
         }
 
-        if (!orderService.isRefundable(findOrder)) {
+        if (orderService.isRefundable(findOrder)) {
             return "redirect:/order/%d?msg=%s".formatted(findOrder.getId(), Ut.url.encode("구매 후 10분이 지나 환불이 불가능합니다."));
         }
 
