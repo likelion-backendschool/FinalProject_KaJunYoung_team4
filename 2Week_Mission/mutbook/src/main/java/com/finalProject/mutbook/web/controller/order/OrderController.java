@@ -9,6 +9,7 @@ import com.finalProject.mutbook.domain.order.Order;
 import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.service.member.MemberService;
 import com.finalProject.mutbook.service.order.OrderService;
+import com.finalProject.mutbook.web.controller.order.exception.ActorCanNotPayOrderException;
 import com.finalProject.mutbook.web.controller.order.exception.OrderIdNotMatchedException;
 import com.finalProject.mutbook.web.controller.order.exception.OrderNotEnoughRestCashException;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,7 @@ public class OrderController {
                                   @AuthenticationPrincipal AuthMember authMember) {
 
         Order newOrder = orderService.findByOrderId(id);
+        long restCash = memberService.getRestCash(authMember.getMember());
 
         if (newOrder == null) {
             redirectAttributes.addFlashAttribute("result", "잘못된 주문 번호입니다.");
@@ -85,8 +87,25 @@ public class OrderController {
         }
 
         model.addAttribute("order", newOrder);
+        model.addAttribute("actorRestCash", restCash);
 
         return "order/detail";
+    }
+
+    @PostMapping("/{id}/pay")
+    @PreAuthorize("isAuthenticated()")
+    public String payByRestCashOnly(@AuthenticationPrincipal AuthMember authMember, @PathVariable long id) {
+        Order order = orderService.findByOrderId(id);
+
+        Member actor = authMember.getMember();
+
+        if (!orderService.actorCanPayment(actor, order)) {
+            throw new ActorCanNotPayOrderException();
+        }
+
+        orderService.payByRestCashOnly(order);
+
+        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("포인트로 결제했습니다."));
     }
 
     @PostMapping("/{id}/cancel")

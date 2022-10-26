@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,10 +71,8 @@ public class OrderService {
         Member buyer = order.getBuyer();
         int payPrice = order.calculatePayPrice();
 
-
         // PAYPrice를 restCash로 반환
         memberService.refundCash(buyer, payPrice, "주문__%d__환불__토스페이먼츠".formatted(order.getId()));
-
 
         order.setPaymentRefund();
         orderRepository.save(order);
@@ -96,6 +95,32 @@ public class OrderService {
         order.setPaymentDone();
         orderRepository.save(order);
         myBookService.saveBook(order);
+    }
+
+    @Transactional
+    public void payByRestCashOnly(Order order) {
+        Member buyer = order.getBuyer();
+
+        long restCash = buyer.getRestCash();
+
+        int payPrice = order.calculatePayPrice();
+
+        if (payPrice > restCash) {
+            throw new RuntimeException("예치금이 부족합니다.");
+        }
+
+        memberService.addCash(buyer, payPrice * -1, "주문__%d__사용__예치금".formatted(order.getId()));
+
+        order.setPaymentDone();
+        orderRepository.save(order);
+    }
+
+    public boolean actorCanPayment(Member actor, Order order) {
+        return actorCanSee(actor, order);
+    }
+
+    public boolean actorCanSee(Member actor, Order order) {
+        return actor.getId().equals(order.getBuyer().getId());
     }
 
     public List<Order> findAllByBuyer(Long buyerId) {

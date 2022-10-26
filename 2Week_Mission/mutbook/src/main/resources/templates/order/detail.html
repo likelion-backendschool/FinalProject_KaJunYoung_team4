@@ -19,7 +19,6 @@
       const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
       const orderName = /*[[ ${order.name} ]]*/ null;
       const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
-      console.log(orderPayPrice);
     </script>
     <section class="section section-login flex-grow flex flex-col items-center justify-center">
       <div class="max-w-md w-full px-2 pt-4">
@@ -60,6 +59,33 @@
 
         </form>
       </div>
+        <div th:if="${order.payable}" class="border border-gray-300 rounded p-2">
+          <label class="label">
+            <span class="label-text">보유 포인트</span>
+            <input type="text" class="input input-bordered min-w-[300px]"
+                   th:value="${#numbers.formatInteger(actorRestCash, 3, 'COMMA') + '원'}" readonly>
+          </label>
+          <div th:with="maxUseRestCash = ${order.calculatePayPrice > actorRestCash ? actorRestCash : order.calculatePayPrice}">
+            <label class="label">
+              <span class="label-text">사용할 예치금</span>
+              <input type="number" id="PaymentForm__useRestCash"
+                     th:placeholder="|0 ~ ${maxUseRestCash}|"
+                     class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}"
+                     onkeydown="PaymentForm__useRestCashFix();"
+                     onkeyup="PaymentForm__useRestCashFix();">
+            </label>
+            <label class="label">
+              <span class="label-text">전액 사용</span>
+              <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll" type="checkbox" class="ml-2 checkbox">
+            </label>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text">PG결제가격 :</span>
+              <span id="PaymentForm__pgPayPriceDisplay"></span>
+            </label>
+          </div>
+        </div>
         <div class="grid grid-cols-2 mt-2 gap-4" th:if="${!order.isPaid()}">
           <button class="btn btn-primary" onclick="payment();">주문하기</button>
           <!--<a class="btn btn-primary" onclick="payment();" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>-->
@@ -74,20 +100,75 @@
     </div>
     </section>
     <script>
-      var clientKey = 'test_ck_GKNbdOvk5rkGKpz99kErn07xlzmj'
-      var tossPayments = TossPayments(clientKey)
+      const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+      const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+      const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
+
+      const tossPayments = TossPayments("test_ck_GKNbdOvk5rkGKpz99kErn07xlzmj");
 
       function payment() {
-        tossPayments.requestPayment('카드', { // 결제 수단 파라미터
-          // 결제 정보 파라미터
-          amount: orderPayPrice,
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (orderPayPrice == useRestCash) {
+          document.payByRestCashOnlyForm.submit();
+          return;
+        }
+
+        const method = "카드"; // "카드" 혹은 "가상계좌"
+
+        const paymentData = {
+          amount: orderPayPrice - useRestCash,
           orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
           orderName: orderName,
           customerName: buyerName,
           successUrl: window.location.origin + "/order/" + orderId + "/success",
           failUrl: window.location.origin + "/order/" + orderId + "/fail"
-        })
+        };
+
+        tossPayments.requestPayment(method, paymentData);
       }
+    </script>
+
+    <script>
+      function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+          useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        if (useRestCash > maxUseRestCash) {
+          useRestCash = maxUseRestCash;
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        if ( useRestCash == maxUseRestCash ) {
+          $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+        else {
+          $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+        const pgPayPrice = orderPayPrice - useRestCash;
+
+        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
+      }
+
+      function PaymentForm__useRestCashAllChanged() {
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+          const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+          $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+      }
+
+      PaymentForm__useRestCashFix();
     </script>
 </main>
 </body>
