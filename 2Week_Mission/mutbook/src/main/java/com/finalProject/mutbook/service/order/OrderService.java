@@ -6,6 +6,7 @@ import com.finalProject.mutbook.domain.order.Order;
 import com.finalProject.mutbook.domain.order.OrderItem;
 import com.finalProject.mutbook.domain.order.OrderRepository;
 import com.finalProject.mutbook.domain.product.Product;
+import com.finalProject.mutbook.service.book.MyBookService;
 import com.finalProject.mutbook.service.cartItem.CartItemService;
 import com.finalProject.mutbook.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class OrderService {
 
     private final CartItemService cartItemService;
+    private final MyBookService myBookService;
     private final MemberService memberService;
     private final OrderRepository orderRepository;
 
@@ -78,6 +80,7 @@ public class OrderService {
 
         order.setPaymentDone();
         orderRepository.save(order);
+        myBookService.saveBook(order);
     }
 
     public List<Order> findAllByBuyer(Long buyerId) {

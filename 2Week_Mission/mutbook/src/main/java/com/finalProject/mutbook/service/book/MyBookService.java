@@ -1,0 +1,30 @@
+package com.finalProject.mutbook.service.book;
+
+import com.finalProject.mutbook.domain.book.MyBook;
+import com.finalProject.mutbook.domain.book.MyBookRepository;
+import com.finalProject.mutbook.domain.order.Order;
+import com.finalProject.mutbook.domain.order.OrderItem;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class MyBookService {
+
+    private final MyBookRepository myBookRepository;
+
+    public void saveBook(Order order) {
+        List<OrderItem> items = order.getOrderItems();
+        for (OrderItem item : items) {
+            MyBook myBook = MyBook.builder()
+                    .member(order.getBuyer())
+                    .product(item.getProduct())
+                    .build();
+            myBookRepository.save(myBook);
+        }
+    }
+}
