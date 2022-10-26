@@ -70,7 +70,7 @@
               <span class="label-text">사용할 예치금</span>
               <input type="number" id="PaymentForm__useRestCash"
                      th:placeholder="|0 ~ ${maxUseRestCash}|"
-                     class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}"
+                     class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}" value="0"
                      onkeydown="PaymentForm__useRestCashFix();"
                      onkeyup="PaymentForm__useRestCashFix();">
             </label>
