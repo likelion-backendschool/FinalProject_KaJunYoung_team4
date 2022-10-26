@@ -8,7 +8,7 @@
       layout:decorate="~{layout/layout.html}">
 
 <head>
-  <title>글 목록</title>
+  <title>주문 목록</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
     <section class="section section-login flex-grow flex flex-col items-center justify-center">
 
       <div class="max-w-[50%] w-full px-2 pt-4">
-        <h1 class="font-bold text-lg">글 작성</h1>
+        <h1 class="font-bold text-lg">주문 목록</h1>
 
         <div class="overflow-x-auto relative">
           <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
@@ -38,13 +38,13 @@
                   class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   th:text="${order.name}">NAME</th>
               <td class="py-4 px-6" th:onClick="|location.href='/order/${order.getId()}'|"
-                  th:text="${order.calculatePayPrice}">PRICE</td>
+                  th:text="${#numbers.formatInteger(order.calculatePayPrice, 3, 'COMMA') + '원'}">PRICE</td>
               <td th:onClick="|location.href='/order/${order.getId()}'|"
                   class="py-4 px-6"
                   th:text="${#temporals.format(order.getCreateDate(), 'yyyy-MM-dd')}">CREATE</td>
               <td th:onClick="|location.href='/order/${order.getId()}'|"
                   class="py-4 px-6"
-                  th:text="${order.isPaid()}">PAID</td>
+                  th:text="${order.isPaid() ? '결제완료' : '미결제'}">PAID</td>
             </tr>
             </tbody>
           </table>
