@@ -28,6 +28,10 @@ public class OrderService {
     private final MemberService memberService;
     private final OrderRepository orderRepository;
 
+    /**
+     * 새로운 주문 생성하기 위해 OrderItem을 추가하는 메소드
+     * @param currentMember 현재 유저의 로그인 아이디
+     */
     @Transactional
     public Order createOrder(Member currentMember) {
         List<CartItem> cartItems = cartItemService.findAllByBuyer(currentMember);
@@ -43,6 +47,11 @@ public class OrderService {
         return create(currentMember, orderItems);
     }
 
+    /**
+     * 새로운 주문 생성을 하기 위한 메소드
+     * @param buyer 현재 유저의 로그인 아이디
+     * @param orderItems 장바구니에서 추가한 상품들
+     */
     @Transactional
     public Order create(Member buyer, List<OrderItem> orderItems) {
         Order order = Order
@@ -62,10 +71,18 @@ public class OrderService {
         return order;
     }
 
+    /**
+     * 생성된 주문을 취소하는 메소드
+     * @param order 취소할 주문 내역(Order)
+     */
     public void cancelOrder(Order order) {
         orderRepository.delete(order);
     }
 
+    /**
+     * 결제된 주문을 환불하는 메소드 (포인트로 반환)
+     * @param order 환불할 주문 내역(Order)
+     */
     @Transactional
     public void refundOrder(Order order) {
         Member buyer = order.getBuyer();
@@ -79,6 +96,11 @@ public class OrderService {
         myBookService.deleteBook(order);
     }
 
+    /**
+     * Toss를 활용한 결제 진행
+     * @param order 결제할 주문 내역(Order)
+     * @param useRestCash 사용할 포인트(예치금)
+     */
     @Transactional
     public void payByTossPayments(Order order, long useRestCash) {
         Member buyer = order.getBuyer();
@@ -97,6 +119,10 @@ public class OrderService {
         myBookService.saveBook(order);
     }
 
+    /**
+     * PG 결제 없이 단순 포인트(예치금) 결제
+     * @param order 결제할 주문 내역(Order)
+     */
     @Transactional
     public void payByRestCashOnly(Order order) {
         Member buyer = order.getBuyer();
@@ -115,14 +141,28 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    /**
+     * 결제가 가능한지 확인하는 메소드 (actorCanSee 재사용)
+     * @param actor 현재 유저의 로그인 아이디
+     * @param order 결제할 주문 내역(Order)
+     */
     public boolean actorCanPayment(Member actor, Order order) {
         return actorCanSee(actor, order);
     }
 
+    /**
+     * 주문 내역의 주인이 맞는지 확인하는 메소드
+     * @param actor 현재 유저의 로그인 아이디
+     * @param order 결제할 주문 내역(Order)
+     */
     public boolean actorCanSee(Member actor, Order order) {
         return actor.getId().equals(order.getBuyer().getId());
     }
 
+    /**
+     * 환불이 가능한지 확인하는 메소드
+     * @param findOrder 환불할 주문 내역(Order)
+     */
     public boolean isRefundable(Order findOrder) {
         List<OrderItem> items = findOrder.getOrderItems();
         for (OrderItem item : items) {
