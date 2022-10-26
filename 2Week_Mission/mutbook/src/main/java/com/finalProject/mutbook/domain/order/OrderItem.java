@@ -60,7 +60,7 @@ public class OrderItem extends BaseEntity {
         this.pgFee = 0;
         this.payPrice = 0;
         this.isPaid = false;
-        this.payDate = LocalDateTime.now();
+        this.payDate = null;
     }
 
 }

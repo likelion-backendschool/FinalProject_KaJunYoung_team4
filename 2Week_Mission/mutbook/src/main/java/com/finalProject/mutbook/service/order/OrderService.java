@@ -123,6 +123,17 @@ public class OrderService {
         return actor.getId().equals(order.getBuyer().getId());
     }
 
+    public boolean isRefundable(Order findOrder) {
+        List<OrderItem> items = findOrder.getOrderItems();
+        for (OrderItem item : items) {
+            // 지금 시간보다 10분 이후면 불가능
+            if (item.getPayDate().plusMinutes(10).isBefore(LocalDateTime.now())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Order> findAllByBuyer(Long buyerId) {
         return orderRepository.findAllByBuyerId(buyerId);
     }
