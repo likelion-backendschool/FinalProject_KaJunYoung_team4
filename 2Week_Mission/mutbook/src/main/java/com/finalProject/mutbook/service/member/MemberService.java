@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -161,6 +162,7 @@ public class MemberService {
      * 이메일을 보내는 메소드
      * @param mailDto 받는 사람의 이메일, 제목, 내용을 담는 DTO
      */
+    @Async
     public void sendMail(MailDto mailDto) {
         SimpleMailMessage sm = new SimpleMailMessage();
         try {
