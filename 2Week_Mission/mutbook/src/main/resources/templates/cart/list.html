@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>장바구니</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+      <div class="max-w-[50%] w-full px-2 pt-4">
+        <h1 class="font-bold text-lg">장바구니</h1>
+
+        <div class="overflow-x-auto relative">
+          <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="py-3 px-6">번호</th>
+              <th scope="col" class="py-3 px-6">상품명</th>
+              <th scope="col" class="py-3 px-6">가격</th>
+              <th scope="col" class="py-3 px-6">비고</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:bordㅣer-gray-700" th:each="item : ${items}">
+              <th scope="row" th:onClick="|location.href='/product/${item.getProduct().getId()}'|"
+                  class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  th:text="${item.getId()}">ID</th>
+              <th scope="row" th:onClick="|location.href='/product/${item.getProduct().getId()}'|"
+                  class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  th:text="${item.getProduct().subject}">SUBJECT</th>
+              <td class="py-4 px-6" th:onClick="|location.href='/product/${item.getProduct().getId()}'|"
+                  th:text="${item.getProduct().price}">PRICE</td>
+              <td class="py-4 px-6">
+                <a class="btn btn-primary" th:href="|javascript: document.deleteCart${item.getProduct().id}.submit()|" >삭제</a>
+                <form th:name="|deleteCart${item.getProduct().id}|" th:action="|@{/cart/remove/{productId} (productId = ${item.getProduct().id})}|" method="post" hidden></form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="grid grid-cols-1 mt-2">
+            <a class="btn btn-primary" href="javascript: document.createOrder.submit();" >구매하기</a>
+            <form name="createOrder" th:action="|@{/order/create}|" method="post" hidden></form>
+          </div>
+          <th:block th:if="${result}">
+            <script th:inline="javascript">
+              const productResult = /*[[ ${result} ]]*/ null;
+
+              console.log(productResult);
+              successModal(productResult);
+            </script>
+          </th:block>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</body>
+</html>

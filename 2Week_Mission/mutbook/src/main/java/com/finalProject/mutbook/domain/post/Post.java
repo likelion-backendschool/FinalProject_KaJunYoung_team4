@@ -7,7 +7,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -25,7 +27,11 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true)
 public class Post extends BaseEntity {
     private String subject;
+
+    @Lob
     private String content;
+
+    @Lob
     private String contentHtml;
 
     @ManyToOne(fetch = LAZY)

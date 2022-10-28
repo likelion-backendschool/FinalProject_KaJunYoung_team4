@@ -8,15 +8,15 @@
       layout:decorate="~{layout/layout.html}">
 
 <head>
-  <title>글 작성</title>
+  <title>상품 상세</title>
 </head>
 
 <body>
   <main layout:fragment="main">
     <section class="section section-login flex-grow flex flex-col items-center justify-center">
 
-    <div class="max-w-md w-full px-2 pt-4">
-      <h1 class="font-bold text-lg">글 상세</h1>
+    <div class="max-w-[60%] w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">상품 상세</h1>
 
       <div class="form-control">
         <label class="label">
@@ -38,10 +38,29 @@
         </label>
         <input type="text" th:value="${product.getPrice()}" class="input input-bordered" readonly>
       </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${existOrder}">
+        <a class="btn btn-primary">이미 구매한 상품입니다.</a>
+      </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${existCart}">
+        <a class="btn btn-primary" href="javascript: document.removeCart.submit();" >장바구니에서 제거</a>
+        <form name="removeCart" th:action="|@{/cart/remove/{productId} (productId = ${product.id})}|" method="post" hidden></form>
+      </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${!existOrder and !existCart}">
+        <a class="btn btn-primary" href="javascript: document.intoCart.submit();" >장바구니에 담기</a>
+        <form name="intoCart" th:action="|@{/cart/add/{productId} (productId = ${product.id})}|" method="post" hidden></form>
+      </div>
       <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(product.getAuthor().getUsername())}">
         <a class="btn btn-primary" th:href="|@{/product/{productId}/modify (productId = ${product.id})}|">수정하기</a>
         <a onclick="return confirm('정말로 삭제하시겠습니까?')" class="btn bg-red-500" th:href="|@{/product/{productId}/delete (productId = ${product.id})}|">삭제하기</a>
       </div>
+      <th:block th:if="${result}">
+        <script th:inline="javascript">
+          const productResult = /*[[ ${result} ]]*/ null;
+
+          console.log(productResult);
+          successModal(productResult);
+        </script>
+      </th:block>
     </div>
 
   </section>

@@ -55,6 +55,8 @@
         <!-- toastui-editor.js -->
         <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
+        <script src="/resource/common/common.js"></script>
+
         <header class="fixed z-40 top-0 left-0 w-full bg-white border-b-[1px] border-b-[color:#efefef] h-[35px]">
             <div class="container mx-auto h-full flex items-center px-2">
                 <a href="/" class="logo flex font-bold mr-auto">
@@ -62,7 +64,7 @@
                     <span class="ml-[2px] hidden sm:block">BOOK</span>
                 </a>
 
-                <div class="flex gap-4 align-middle">
+                <div class="flex gap-2 align-middle">
                     <a href="/adm/home/main" class="inline-flex align-middle" sec:authorize="hasAuthority('ADMIN')">
                         <i class="fa-solid fa-gauge-high"></i>
                         <span class="ml-[2px] hidden sm:block">
@@ -75,7 +77,7 @@
                         </div>
                     </a>
                     <a sec:authorize="isAnonymous()">
-                        <div class="flex items-center justify-center p-12">
+                        <div class="flex items-center justify-center p-2">
                             <div class=" relative inline-block text-left dropdown">
                                     <span class="rounded-md shadow-sm">
                                         <button class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
@@ -99,10 +101,10 @@
                         </div>
                     </a>
                     <a sec:authorize="isAuthenticated()">
-                        <div class="flex items-center justify-center p-12">
+                        <div class="flex items-center justify-center p-2">
                             <div class="relative inline-block text-left dropdown">
                                     <span class="rounded-md shadow-sm">
-                                        <button class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
+                                        <button class="inline-flex justify-center text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
                                                 type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-2">
                                             서비스 <i class="fa-solid fa-caret-down ml-2"></i>
                                         </button>
@@ -116,8 +118,10 @@
                                             <a href="/post/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
                                                 <span class="ml-[2px]"><i class="fa-solid fa-list"></i> 글 목록</span>
                                             </a>
+                                        </div>
+                                        <div class="py-1">
                                             <a href="/product/create" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
-                                                <span class="ml-[2px]"><i class="fa-solid fa-pen"></i> 상품 등록</span>
+                                                <span class="ml-[2px]"><i class="fa-solid fa-book"></i> 상품 등록</span>
                                             </a>
                                             <a href="/product/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
                                                 <span class="ml-[2px]"><i class="fa-solid fa-list"></i> 상품 목록</span>
@@ -129,10 +133,10 @@
                         </div>
                     </a>
                     <a sec:authorize="isAuthenticated()">
-                        <div class="flex items-center justify-center p-12">
+                        <div class="flex items-center justify-center p-2">
                             <div class=" relative inline-block text-left dropdown">
                                     <span class="rounded-md shadow-sm">
-                                        <button class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
+                                        <button class="inline-flex justify-center text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
                                                 type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-117">
                                             프로필 <i class="fa-solid fa-caret-down ml-2"></i>
                                         </button>
@@ -148,6 +152,14 @@
                                             </a>
                                             <a href="/member/modifyPassword" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
                                                 <span class="ml-[2px]"><i class="fa-solid fa-lock"></i> 비밀번호 변경</span>
+                                            </a>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="/cart/list" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-cart-shopping"></i> 장바구니</span>
+                                            </a>
+                                            <a href="/order/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-money-check-dollar"></i> 주문내역</span>
                                             </a>
                                         </div>
                                         <div class="py-1">
@@ -188,8 +200,6 @@
                 </div>
             </div>
         </footer>
-
-        <script src="/resource/common/common.js"></script>
 
         <script th:inline="javascript">
             const params = /*[[ ${param} ]]*/ null;

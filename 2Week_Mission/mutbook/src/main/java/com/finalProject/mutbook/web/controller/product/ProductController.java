@@ -1,6 +1,8 @@
 package com.finalProject.mutbook.web.controller.product;
 
 import com.finalProject.mutbook.domain.member.AuthMember;
+import com.finalProject.mutbook.service.book.MyBookService;
+import com.finalProject.mutbook.service.cartItem.CartItemService;
 import com.finalProject.mutbook.service.product.ProductService;
 import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.web.dto.product.CreateProductDto;
@@ -28,6 +30,8 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final MyBookService myBookService;
+    private final CartItemService cartItemService;
 
     @GetMapping("/create")
     @PreAuthorize("isAuthenticated()")
@@ -61,9 +65,17 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String showProductDetail(@PathVariable Long id, Model model) {
+    public String showProductDetail(@PathVariable Long id, Model model,
+                                    @AuthenticationPrincipal AuthMember authMember) {
         Product currentProduct = productService.findByProductId(id);
+
+        boolean existOrder = myBookService.existProduct(authMember.getMember().getId(), currentProduct.getId());
+        boolean existCart = cartItemService.existProduct(authMember.getMember().getId(), currentProduct.getId());
+
         model.addAttribute("product", currentProduct);
+        model.addAttribute("existOrder", existOrder);
+        model.addAttribute("existCart", existCart);
+
         return "product/detail";
     }
 

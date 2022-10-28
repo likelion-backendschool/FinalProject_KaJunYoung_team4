@@ -1,18 +1,24 @@
 package com.finalProject.mutbook.service.member;
 
+import com.finalProject.mutbook.app.dto.RsData;
+import com.finalProject.mutbook.domain.cash.CashLog;
 import com.finalProject.mutbook.domain.member.AuthMember;
 import com.finalProject.mutbook.domain.member.Member;
 import com.finalProject.mutbook.domain.member.MemberRepository;
+import com.finalProject.mutbook.service.cash.CashService;
 import com.finalProject.mutbook.web.dto.member.FindPwdDto;
 import com.finalProject.mutbook.web.dto.member.MailDto;
 import com.finalProject.mutbook.web.dto.member.modify.ModifyBaseInfoDto;
 import com.finalProject.mutbook.web.dto.member.SignUpDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -31,8 +37,9 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-
     private final JavaMailSender javaMailSender;
+
+    private final CashService cashService;
 
     @Value("${spring.mail.username}")
     private String FROM;
@@ -41,7 +48,7 @@ public class MemberService {
      * 새로운 회원을 저장하는 메소드
      * @param signUpDto 회원가입 시 입력된 정보를 담고 있음
      */
-    public void join(SignUpDto signUpDto) {
+    public Member join(SignUpDto signUpDto) {
         Member newMember = Member.builder()
                 .username(signUpDto.getUsername())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
@@ -57,7 +64,7 @@ public class MemberService {
                 .build();
         sendMail(mailDto);
 
-        memberRepository.save(newMember);
+        return memberRepository.save(newMember);
     }
 
     /**
@@ -155,6 +162,7 @@ public class MemberService {
      * 이메일을 보내는 메소드
      * @param mailDto 받는 사람의 이메일, 제목, 내용을 담는 DTO
      */
+    @Async
     public void sendMail(MailDto mailDto) {
         SimpleMailMessage sm = new SimpleMailMessage();
         try {
@@ -182,6 +190,42 @@ public class MemberService {
         return false;
     }
 
+    /**
+     * CashLog를 기록하기 위한 메소드
+     * @param member 현재 유저의 로그인 아이디
+     * @param price 결제한 금액
+     * @param eventType 결제 방식
+     */
+    @Transactional
+    public RsData<AddCashRsDataBody> addCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+
+        return RsData.of(
+                "S-1",
+                "성공",
+                new AddCashRsDataBody(cashLog, newRestCash)
+        );
+    }
+
+    /**
+     * 환불 CashLog를 기록하기 위한 메소드
+     * @param member 현재 유저의 로그인 아이디
+     * @param price 결제한 금액
+     * @param eventType 결제 방식
+     */
+    @Transactional
+    public void refundCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+    }
+
     public void forceAuthentication (Member member) {
         String memberRole = "";
         if (member.getAuthLevel() == 3) {
@@ -200,5 +244,17 @@ public class MemberService {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
+    }
+    @Data
+    @AllArgsConstructor
+    public static class AddCashRsDataBody {
+        CashLog cashLog;
+        long newRestCash;
+    }
+
+    public long getRestCash(Member member) {
+        Member foundMember = findByUsername(member.getUsername());
+
+        return foundMember.getRestCash();
     }
 }
