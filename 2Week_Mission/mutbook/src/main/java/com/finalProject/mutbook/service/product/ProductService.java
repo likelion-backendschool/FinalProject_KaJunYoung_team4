@@ -3,6 +3,8 @@ package com.finalProject.mutbook.service.product;
 import com.finalProject.mutbook.domain.member.Member;
 import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.domain.product.ProductRepository;
+import com.finalProject.mutbook.service.book.MyBookService;
+import com.finalProject.mutbook.service.cartItem.CartItemService;
 import com.finalProject.mutbook.web.dto.product.CreateProductDto;
 import com.finalProject.mutbook.web.dto.product.ModifyProductDto;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final MyBookService myBookService;
+    private final CartItemService cartItemService;
 
     /**
      * 새로운 Product를 저장하는 메소드
@@ -59,7 +63,6 @@ public class ProductService {
 
     /**
      * Product를 수정하는 메소드
-     *
      * @param currentProduct 수정하기 전 Product
      * @param modifyProductDto Product의 subject, price를 가지고 있는 DTO
      */

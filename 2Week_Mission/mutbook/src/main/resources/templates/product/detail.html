@@ -38,7 +38,14 @@
         </label>
         <input type="text" th:value="${product.getPrice()}" class="input input-bordered" readonly>
       </div>
-      <div class="grid grid-cols-1 mt-2">
+      <div class="grid grid-cols-1 mt-2" th:if="${existOrder}">
+        <a class="btn btn-primary">이미 구매한 상품입니다.</a>
+      </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${existCart}">
+        <a class="btn btn-primary" href="javascript: document.removeCart.submit();" >장바구니에서 제거</a>
+        <form name="removeCart" th:action="|@{/cart/remove/{productId} (productId = ${product.id})}|" method="post" hidden></form>
+      </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${!existOrder and !existCart}">
         <a class="btn btn-primary" href="javascript: document.intoCart.submit();" >장바구니에 담기</a>
         <form name="intoCart" th:action="|@{/cart/add/{productId} (productId = ${product.id})}|" method="post" hidden></form>
       </div>

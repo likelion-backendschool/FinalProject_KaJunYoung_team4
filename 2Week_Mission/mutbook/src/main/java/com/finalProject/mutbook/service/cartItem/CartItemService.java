@@ -60,4 +60,8 @@ public class CartItemService {
         return cartItemRepository.findAllByBuyerId(buyer.getId());
     }
 
+    @Transactional(readOnly = true)
+    public boolean existProduct(long memberId, long productId) {
+        return cartItemRepository.existsByBuyerIdAndProductId(memberId, productId);
+    }
 }

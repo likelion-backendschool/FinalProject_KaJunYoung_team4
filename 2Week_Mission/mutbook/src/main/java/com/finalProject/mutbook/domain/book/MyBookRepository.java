@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MyBookRepository extends JpaRepository<MyBook, Long> {
     List<MyBook> findAllByOrderId(long orderId);
+
+    boolean existsByMemberIdAndProductId(long memberId, long productId);
 }
