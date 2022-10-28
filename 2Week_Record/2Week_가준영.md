@@ -131,15 +131,15 @@ List<Order> findByBuyer(Member buyer)
 List<Order> findAllByBuyerId(long buyerId)
 List<Order> findAllByBuyer(Member buyer)
 ```
-- `findBy`, `findAllBy`의 차이
+### `findBy`, `findAllBy`의 차이
 
 [StackOverFlow](https://stackoverflow.com/questions/37253571/spring-data-jpa-difference-between-findby-findallby)의 말을 살펴보니 `findBy`, `findAllBy`의 차이는 없다고 한다.<br>
 `All`이라는 키워드는 쿼리를 실행할 때 실제로 무시되어 진행된다. 즉, `findBy == findAllBy` 라고 표현할 수 있다.
 
-- `findByMemberId`, `findByMember`의 차이
+### `findByMemberId`, `findByMember`의 차이
 
 강의 내용 중에 `DB`에는 `Table` 자체가 `Column`으로 저장되지 않고, `FK`키를 통해 저장된다는 것을 배운 기억이 있다.<br>
-그렇기 때문에 `Member`로 검색을 하던, `MemberId`로 검색을 하던 결국 `MemberId`를 통해 검색이 된다.
+그렇기 때문에 `Member`로 검색을 하던, `MemberId`로 검색을 하던 결국 `MemberId`를 통해 검색이 되는걸로 알고 있다.
 
 그래도 혹시 몰라 테스트를 통해 확인해봤다.<br>
 우선 시간적 차이가 있는지 궁금해서 **100건**의 테스트 케이스를 통해 확인해보았다.
@@ -150,6 +150,7 @@ List<Order> findAllByBuyer(Member buyer)
 `Member`에서 `id`를 꺼내오는 과정 때문인지는 몰라도 생각보다 차이가 있는 것 같다.
 
 쿼리문을 살펴보면 아래와 같다.
+
 ```bash
 # findByMember
 Hibernate: 
@@ -205,10 +206,13 @@ Hibernate:
 ```
 
 둘의 차이는 바로 `Join`이다.<br>
-하지만 이에 대한 차이가 명확하지 않아서 [링크](https://jojoldu.tistory.com/520)를 통해 다시 확인해볼 예정이다.
+하지만 이에 대한 차이가 명확하지 않아서 [링크](https://jojoldu.tistory.com/520)를 통해 다시 확인할 예정이다.
 
 ### `@Transactional`
-> `@Transactional`의 가장 큰 목적은 작업을 처리하던 중 오류가 발생했을 때 다시 원상태로 돌리는 것이다.
+> 로직이 하나라도 실패하면 그 연결된 작업들이 모두 초기 상태로 돌아가는 걸로 이해했는데, 맞다면 결제와 같은 기능에서는 꼭 필요한 어노테이션인 것 같습니다!
+
+`@Transactional`의 가장 큰 목적은 작업을 처리하던 중 오류가 발생했을 때 다시 원상태로 돌리는 것이다.
+
 ```java
 /**
 * Product를 수정하는 메소드
@@ -220,8 +224,11 @@ public void modifyProduct(Product currentProduct, ModifyProductDto modifyProduct
     currentProduct.modifyProduct(modifyProductDto.getSubject(),modifyProductDto.getPrice());
 }
 ```
+
 위 상태에서 정상적으로 수정이 된다면 `productRepository.save(product)`가 없어도 변경 감지를 통해 저장이 된다.<br>
 만약 `@Transcational` 어노테이션을 붙이지 않았다면 `save()`하는 과정을 추가해주어야 한다.
+
+> [참고 링크](https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/)
 
 ---
 
