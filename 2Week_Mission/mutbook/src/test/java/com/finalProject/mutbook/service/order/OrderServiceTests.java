@@ -9,6 +9,7 @@ import com.finalProject.mutbook.service.product.ProductService;
 import com.finalProject.mutbook.web.dto.member.SignUpDto;
 import com.finalProject.mutbook.web.dto.product.CreateProductDto;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,16 +54,13 @@ class OrderServiceTests {
     void createProduct() {
         Member currentMember = memberService.findByUsername("ciTester");
         CreateProductDto dto = new CreateProductDto();
-        dto.setSubject("SpringBoot");
-        dto.setPrice(12000);
-        Product product1 = productService.saveProduct(currentMember, dto);
 
-        dto.setSubject("StringBoat");
-        dto.setPrice(12000);
-        Product product2 = productService.saveProduct(currentMember, dto);
-
-        cartItemService.addItem(currentMember, product1);
-        cartItemService.addItem(currentMember, product2);
+        for (int i = 0; i < 100; i++) {
+            dto.setSubject("SpringBoot");
+            dto.setPrice(12000);
+            Product product = productService.saveProduct(currentMember, dto);
+            cartItemService.addItem(currentMember, product);
+        }
     }
 
     @Test
@@ -75,7 +73,39 @@ class OrderServiceTests {
         orderService.createOrder(currentMember);
 
         // then
-        List<Order> orders = orderService.findAllByBuyer(currentMember.getId());
+        List<Order> orders = orderService.findAllByBuyerId(currentMember.getId());
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("findByMemberId")
+    void findByMemberId() {
+        // given
+        Member currentMember = memberService.findByUsername("ciTester");
+        System.out.println("--------------------------------");
+
+        // when
+        orderService.createOrder(currentMember);
+
+        // then
+        List<Order> orders = orderService.findAllByBuyerId(currentMember.getId());
+        System.out.println("=================================");
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("findByMember")
+    void findByMember() {
+        // given
+        Member currentMember = memberService.findByUsername("ciTester");
+        System.out.println("--------------------------------");
+
+        // when
+        orderService.createOrder(currentMember);
+
+        // then
+        List<Order> orders = orderService.findAllByBuyer(currentMember);
+        System.out.println("=================================");
         assertThat(orders.size()).isEqualTo(1);
     }
 

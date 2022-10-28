@@ -6,7 +6,6 @@ import com.finalProject.mutbook.app.util.Ut;
 import com.finalProject.mutbook.domain.member.AuthMember;
 import com.finalProject.mutbook.domain.member.Member;
 import com.finalProject.mutbook.domain.order.Order;
-import com.finalProject.mutbook.domain.product.Product;
 import com.finalProject.mutbook.service.member.MemberService;
 import com.finalProject.mutbook.service.order.OrderService;
 import com.finalProject.mutbook.web.controller.order.exception.ActorCanNotPayOrderException;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,7 +66,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public String showOrderList(Model model, @AuthenticationPrincipal AuthMember authMember) {
 
-        List<Order> orderList = orderService.findAllByBuyer(authMember.getMember().getId());
+        List<Order> orderList = orderService.findAllByBuyerId(authMember.getMember().getId());
 
         model.addAttribute("orders", orderList);
 

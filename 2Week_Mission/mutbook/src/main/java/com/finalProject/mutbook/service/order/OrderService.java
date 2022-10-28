@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,8 +173,12 @@ public class OrderService {
         return false;
     }
 
-    public List<Order> findAllByBuyer(Long buyerId) {
+    public List<Order> findAllByBuyerId(Long buyerId) {
         return orderRepository.findAllByBuyerId(buyerId);
+    }
+
+    public List<Order> findAllByBuyer(Member buyer) {
+        return orderRepository.findAllByBuyer(buyer);
     }
 
     public Order findByOrderId(Long orderId) {
