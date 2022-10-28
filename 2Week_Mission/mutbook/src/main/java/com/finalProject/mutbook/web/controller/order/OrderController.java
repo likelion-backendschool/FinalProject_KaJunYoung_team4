@@ -43,7 +43,10 @@ import java.util.Map;
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
-    private final String SECRET_KEY = "test_sk_4vZnjEJeQVx17vAMLZMrPmOoBN0k";
+    @Value("${custom.toss.secret}")
+    private String SECRET_KEY;
+    @Value("${custom.toss.client}")
+    private String CLIENT_KEY;
 
     private final OrderService orderService;
     private final MemberService memberService;
@@ -87,6 +90,7 @@ public class OrderController {
         }
 
         model.addAttribute("order", newOrder);
+        model.addAttribute("CLIENT_KEY", CLIENT_KEY);
         model.addAttribute("actorRestCash", restCash);
 
         return "order/detail";
