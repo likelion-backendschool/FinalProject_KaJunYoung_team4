@@ -104,14 +104,29 @@ Too long string in column 1
 > 환불과 같이 내역이 삭제되지 않았을 때 `Redirect` 되는 **사용자 편의성**을 제대로 구현하지 못했다.<br>
 > 기능을 다시 확인해보면서 제대로 `Redirect` 되지 않거나, 메세지가 제대로 나오는지 다시 확인해봐야할 것 같다.
 
+- [ ] `Select Order`
+> 장바구니에서 선택된 상품만 결제를 진행할 수 있도록 변경하기
+
+- [ ] `Secret Key`
+> Toss와 관련된 Key는 application.yml 파일에서 보관해야할 것 같다.
+```yaml
+custom: 
+    toss: 
+        secretKey: abcdefghijklmnopqrstuvwxyz
+```
+
 ---
 
 ## [😎 Review]
 
-미진행
+- [ ] `findBy`
+> 개발자의 입장에서 모두 다르지만 `JPA`로 `List<Object>`로 반환하는 방법은 아래와 같은 방식이 있다.
+```java
+```
+> `findByMemberId`, `findByMember`, `findAllByMember`, `findAllByMemberId`
 
 ---
 
 ## [🤔 Retrospect]
 
-미진행
+선택 사항
