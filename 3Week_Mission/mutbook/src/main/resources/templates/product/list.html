@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>상품 목록</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+    <div class="max-w-[80%] w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">상품 목록</h1>
+
+      <div class="overflow-x-auto relative">
+        <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="py-3 px-6">번호</th>
+            <th scope="col" class="py-3 px-6">상품명</th>
+            <th scope="col" class="py-3 px-6">가격</th>
+            <th scope="col" class="py-3 px-6">작성자</th>
+            <th scope="col" class="py-3 px-6">작성날짜</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:bordㅣer-gray-700" th:each="product : ${products}">
+            <th scope="row" th:onClick="|location.href='/product/${product.getId()}'|"
+                class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                th:text="${product.getId()}">ID</th>
+            <th scope="row" th:onClick="|location.href='/product/${product.getId()}'|"
+                class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                th:text="${product.getSubject()}">SUBJECT</th>
+            <td class="py-4 px-6" th:onClick="|location.href='/product/${product.getId()}'|"
+                th:text="${product.getPrice()}">PRICE</td>
+            <td class="py-4 px-6" th:onClick="|location.href='/product/${product.getId()}'|"
+                th:text="${product.getAuthor().getUsername()}">AUTHOR</td>
+            <td th:onClick="|location.href='/product/${product.getId()}'|"
+                class="py-4 px-6"
+                th:text="${#temporals.format(product.getCreateDate(), 'yyyy-MM-dd')}">CREATE</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+</main>
+</body>
+</html>

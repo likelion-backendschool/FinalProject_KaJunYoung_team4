@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>글 상세</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+    <div class="max-w-[60%] w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">글 상세</h1>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">제목</span>
+        </label>
+        <input type="text" th:value="${post.getSubject()}" placeholder="제목을 입력해주세요." class="input input-bordered" readonly>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">해시태그</span>
+        </label>
+        <div class="my-2">
+          <div th:each="hashTag : ${post.hashTags}" class="badge badge-lg badge-accent mx-1">
+            <span>#</span>
+            <span th:text="${hashTag.keyword.content}"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">내용</span>
+        </label>
+        <div id="content" class="border-gray-300 border-2 rounded-md p-2"></div>
+      </div>
+      <div class="grid grid-cols-2 mt-2 gap-4" th:if="${#authentication.getName().equals(post.getAuthor().getUsername())}">
+        <a class="btn btn-primary" th:href="|@{/post/{postId}/modify (postId = ${post.id})}|">수정하기</a>
+        <a onclick="return confirm('정말로 삭제하시겠습니까?')" class="btn bg-red-500" th:href="|@{/post/{postId}/delete (postId = ${post.id})}|">삭제하기</a>
+      </div>
+    </div>
+
+  </section>
+    <script th:inline="javascript">
+      const Editor = toastui.Editor.factory;
+
+      /*<![CDATA[*/
+      const contentMarkdown = [[${post.content}]];
+      /*]]>*/
+
+      const content = new Editor({
+        el: document.querySelector('#content'),
+        height: '500px',
+        viewer: true,
+        initialValue: contentMarkdown
+      });
+    </script>
+</main>
+</body>
+</html>

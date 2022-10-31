@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <title>MUTBOOK</title>
+
+        <!-- 제이쿼리 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+        <!-- select-2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <!-- toastr -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+        <!-- 폰트어썸 -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+        <!-- toast ui -->
+        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+        <!-- 테일윈드 -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .dropdown:focus-within .dropdown-menu {
+                opacity:1;
+                transform: translate(0) scale(1);
+                visibility: visible;
+            }
+        </style>
+    </head>
+
+    <body class="min-h-screen flex flex-col pt-[35px]">
+
+        <!-- 데이지 UI -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@2.31.0/dist/full.css" rel="stylesheet" type="text/css"/>
+
+        <!-- common.css -->
+        <link href="/resource/common/common.css" rel="stylesheet" type="text/css"/>
+
+        <!-- flowbite.js -->
+        <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+
+        <!-- toastui-editor.js -->
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+        <script src="/resource/common/common.js"></script>
+
+        <header class="fixed z-40 top-0 left-0 w-full bg-white border-b-[1px] border-b-[color:#efefef] h-[35px]">
+            <div class="container mx-auto h-full flex items-center px-2">
+                <a href="/" class="logo flex font-bold mr-auto">
+                    <span class="text-[#1E9EFE]">MUT</span>
+                    <span class="ml-[2px] hidden sm:block">BOOK</span>
+                </a>
+
+                <div class="flex gap-2 align-middle">
+                    <a href="/adm/home/main" class="inline-flex align-middle" sec:authorize="hasAuthority('ADMIN')">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span class="ml-[2px] hidden sm:block">
+                            관리자 홈
+                        </span>
+                    </a>
+                    <a href="/post/list" class="inline-flex align-middle" sec:authorize="isAuthenticated()">
+                        <div class="relative inline-block align-middle text-left">
+                            <span class="ml-[2px] hidden sm:block"></span>
+                        </div>
+                    </a>
+                    <a sec:authorize="isAnonymous()">
+                        <div class="flex items-center justify-center p-2">
+                            <div class=" relative inline-block text-left dropdown">
+                                    <span class="rounded-md shadow-sm">
+                                        <button class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
+                                                type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-1">
+                                            회원 <i class="fa-solid fa-caret-down ml-2"></i>
+                                        </button>
+                                    </span>
+                                <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
+                                    <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-1" role="menu">
+                                        <div class="py-1">
+                                            <a href="/member/login" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-arrow-right-to-bracket"></i> 로그인</span>
+                                            </a>
+                                            <a href="/member/signUp" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-user-plus"></i> 회원가입</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a sec:authorize="isAuthenticated()">
+                        <div class="flex items-center justify-center p-2">
+                            <div class="relative inline-block text-left dropdown">
+                                    <span class="rounded-md shadow-sm">
+                                        <button class="inline-flex justify-center text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
+                                                type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-2">
+                                            서비스 <i class="fa-solid fa-caret-down ml-2"></i>
+                                        </button>
+                                    </span>
+                                <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
+                                    <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-2" role="menu">
+                                        <div class="py-1">
+                                            <a href="/post/write" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-pen"></i> 글 작성</span>
+                                            </a>
+                                            <a href="/post/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-list"></i> 글 목록</span>
+                                            </a>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="/product/create" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-book"></i> 상품 등록</span>
+                                            </a>
+                                            <a href="/product/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-list"></i> 상품 목록</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a sec:authorize="isAuthenticated()">
+                        <div class="flex items-center justify-center p-2">
+                            <div class=" relative inline-block text-left dropdown">
+                                    <span class="rounded-md shadow-sm">
+                                        <button class="inline-flex justify-center text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white rounded-md active:bg-gray-50 active:text-gray-800"
+                                                type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-117">
+                                            프로필 <i class="fa-solid fa-caret-down ml-2"></i>
+                                        </button>
+                                    </span>
+                                    <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
+                                    <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
+                                        <div class="px-4 py-3">
+                                            <p class="text-sm font-medium leading-5 text-gray-900 truncate" th:text="${#authentication.getName()}">닉네임</p>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="/member/modify" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-user"></i> 회원정보 변경</span>
+                                            </a>
+                                            <a href="/member/modifyPassword" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-lock"></i> 비밀번호 변경</span>
+                                            </a>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="/cart/list" tabindex="0" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-cart-shopping"></i> 장바구니</span>
+                                            </a>
+                                            <a href="/order/list" tabindex="1" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-money-check-dollar"></i> 주문내역</span>
+                                            </a>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="javascript: document.logoutForm.submit();" tabindex="3" class="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"  role="menuitem" >
+                                                <span class="ml-[2px]"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</span>
+                                            </a>
+                                            <form name="logoutForm" th:action="@{/member/logout}" method="post" hidden></form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="flex-grow flex flex-col">
+            <main layout:fragment="main" class="flex-grow flex flex-col"></main>
+        </div>
+
+        <footer class="border-t-[1px] border-t-[color:#efefef] py-3 text-[color:#777] text-[14px] mt-5">
+            <div class="container mx-auto flex flex-col gap-1 px-2">
+                <div>
+                    <a href="/">
+                        <span>사업자정보확인</span>
+                        <span class="inline-block scale-[.7]">▼</span>
+                    </a>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="/">이용약관</a>
+                    <a href="/">개인정보 처리방침</a>
+                    <a href="/">청소년보호정책</a>
+                </div>
+
+                <div>
+                    <a href="/">©MUTBOOK Corp.</a>
+                </div>
+            </div>
+        </footer>
+
+        <script th:inline="javascript">
+            const params = /*[[ ${param} ]]*/ null;
+
+            if (params.msg) {
+                successModal(params.msg);
+            }
+
+            if (params.errorMsg) {
+                errorModal(params.errorMsg);
+            }
+        </script>
+
+    </body>
+</html>

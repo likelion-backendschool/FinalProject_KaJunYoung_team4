@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>주문 상세</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+      <div class="max-w-[60%] w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">결제 실패</h1>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">주문 번호</span>
+        </label>
+        <input type="text" th:value="${orderId}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">실패 사유</span>
+        </label>
+        <input type="text"
+               th:value="${message}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">실패 코드</span>
+        </label>
+        <input type="text" th:value="${code}" class="input input-bordered" readonly>
+      </div>
+
+      <div class="grid grid-cols-1 mt-2">
+        <a class="btn btn-primary" th:href="@{/order/list}">돌아가기</a>
+      </div>
+    </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>주문 상세</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <script src="https://js.tosspayments.com/v1"></script>
+    <script th:inline="javascript">
+      const orderId = /*[[ ${order.id} ]]*/ null;
+      const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
+      const orderName = /*[[ ${order.name} ]]*/ null;
+      const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
+    </script>
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+      <div class="max-w-[60%] w-full px-2 pt-4">
+      <h1 class="font-bold text-lg">주문 상세내역</h1>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">주문 번호</span>
+        </label>
+        <input type="text" th:value="${order.id}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">주문 가격</span>
+        </label>
+        <input type="text"
+               th:value="${#numbers.formatInteger(order.calculatePayPrice, 3, 'COMMA') + '원'}" class="input input-bordered" readonly>
+        <label class="label">
+          <span class="label-text">주문 날짜</span>
+        </label>
+        <input type="text" th:value="${#temporals.format(order.createDate, 'yyyy-MM-dd')}" class="input input-bordered" readonly>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">상품 상세</span>
+        </label>
+        <div class="my-2">
+          <div th:each="item : ${order.getOrderItems()}" class="badge badge-lg badge-accent m-1">
+            <a th:href="|@{/product/{productId}(productId = ${item.getProduct().id})}|">
+              <span th:text="${item.getProduct().subject}"></span>
+              <span th:text="${#numbers.formatInteger(item.getProduct().price, 3, 'COMMA') + '원'}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 mt-2" th:if="${order.isPaid()}">
+        <a onclick="return confirm('정말로 환불하시겠습니까?')" class="btn btn-primary" href="javascript: document.refundOrder.submit();">환불하기</a>
+        <form hidden name="refundOrder" method="POST" th:action="@{|/order/${order.id}/refund|}">
+
+        </form>
+      </div>
+        <div th:if="${order.payable}" class="border border-gray-300 rounded p-2">
+          <label class="label">
+            <span class="label-text">보유 포인트</span>
+            <input type="text" class="input input-bordered min-w-[300px]"
+                   th:value="${#numbers.formatInteger(actorRestCash, 3, 'COMMA') + '원'}" readonly>
+          </label>
+          <div th:with="maxUseRestCash = ${order.calculatePayPrice > actorRestCash ? actorRestCash : order.calculatePayPrice}">
+            <label class="label">
+              <span class="label-text">사용할 예치금</span>
+              <input type="number" id="PaymentForm__useRestCash"
+                     th:placeholder="|0 ~ ${maxUseRestCash}|"
+                     class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}" value="0"
+                     onkeydown="PaymentForm__useRestCashFix();"
+                     onkeyup="PaymentForm__useRestCashFix();">
+            </label>
+            <label class="label">
+              <span class="label-text">전액 사용</span>
+              <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll" type="checkbox" class="ml-2 checkbox">
+            </label>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text">PG결제가격 :</span>
+              <span id="PaymentForm__pgPayPriceDisplay"></span>
+            </label>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 mt-2 gap-4" th:if="${!order.isPaid()}">
+          <button class="btn btn-primary" onclick="payment();">주문하기</button>
+          <!--<a class="btn btn-primary" onclick="payment();" th:href="|@{/order/{orderId}/pay (orderId = ${order.id})}|">주문하기</a>-->
+          <a onclick="return confirm('정말로 취소하시겠습니까?')" class="btn btn-primary" href="javascript: document.cancelOrder.submit();">주문삭제</a>
+          <form hidden name="payByRestCashOnlyForm" method="POST" th:action="@{|/order/${order.id}/pay|}">
+
+          </form>
+          <form hidden name="cancelOrder" method="POST" th:action="@{|/order/${order.id}/cancel|}">
+
+          </form>
+        </div>
+    </div>
+    </section>
+    <script th:inline="javascript">
+      const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+      const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+      const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
+
+      const tossPayments = TossPayments(/*[[ ${CLIENT_KEY} ]]*/ null);
+
+      function payment() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (orderPayPrice == useRestCash) {
+          document.payByRestCashOnlyForm.submit();
+          return;
+        }
+
+        const method = "카드"; // "카드" 혹은 "가상계좌"
+
+        const paymentData = {
+          amount: orderPayPrice - useRestCash,
+          orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
+          orderName: orderName,
+          customerName: buyerName,
+          successUrl: window.location.origin + "/order/" + orderId + "/success",
+          failUrl: window.location.origin + "/order/" + orderId + "/fail"
+        };
+
+        tossPayments.requestPayment(method, paymentData);
+      }
+    </script>
+
+    <script>
+      function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+          useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        if (useRestCash > maxUseRestCash) {
+          useRestCash = maxUseRestCash;
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        if ( useRestCash == maxUseRestCash ) {
+          $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+        else {
+          $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+        const pgPayPrice = orderPayPrice - useRestCash;
+
+        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
+      }
+
+      function PaymentForm__useRestCashAllChanged() {
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+          const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+          $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+          $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+      }
+
+      PaymentForm__useRestCashFix();
+    </script>
+</main>
+</body>
+</html>

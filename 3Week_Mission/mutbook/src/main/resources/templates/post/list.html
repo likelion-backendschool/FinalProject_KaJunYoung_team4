@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko"
+      class="no-js"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout.html}">
+
+<head>
+  <title>글 목록</title>
+</head>
+
+<body>
+  <main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+      <div class="max-w-[80%] w-full px-2 pt-4">
+        <h1 class="font-bold text-lg">글 목록</h1>
+
+        <div class="overflow-x-auto relative">
+          <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="py-3 px-6">번호</th>
+              <th scope="col" class="py-3 px-6">제목</th>
+              <th scope="col" class="py-3 px-6">작성자</th>
+              <th scope="col" class="py-3 px-6">작성일</th>
+              <th scope="col" class="py-3 px-6">수정일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:bordㅣer-gray-700" th:each="post : ${posts}">
+              <th scope="row" th:onClick="|location.href='/post/${post.getId()}'|"
+                  class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  th:text="${post.getId()}">ID</th>
+              <th scope="row" th:onClick="|location.href='/post/${post.getId()}'|"
+                  class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  th:text="${post.getSubject()}">SUBJECT</th>
+              <td class="py-4 px-6" th:onClick="|location.href='/post/${post.getId()}'|"
+                  th:text="${post.getAuthor().getUsername()}">AUTHOR</td>
+              <td th:onClick="|location.href='/post/${post.getId()}'|"
+                  class="py-4 px-6"
+                  th:text="${#temporals.format(post.getCreateDate(), 'yyyy-MM-dd')}">CREATE</td>
+              <td th:onClick="|location.href='/post/${post.getId()}'|"
+                  class="py-4 px-6"
+                  th:text="${#temporals.format(post.getModifyDate(), 'yyyy-MM-dd')}">MODIFY</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</body>
+</html>
